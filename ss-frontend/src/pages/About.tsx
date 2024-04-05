@@ -74,8 +74,7 @@ function About({
             GNU GPLv3
           </Link>
           <br />
-          {/* TODO: Source Link */}
-          <Link color="primary" href="https://github.com/VarunS2002" target="_blank" rel="noreferrer">
+          <Link color="primary" href="https://github.com/VarunS2002/Software_Security-CS6417_FR01B" target="_blank" rel="noreferrer">
             Source Code
           </Link>
         </DialogContentText>

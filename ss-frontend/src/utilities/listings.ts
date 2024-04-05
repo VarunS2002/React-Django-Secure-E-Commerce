@@ -1,0 +1,200 @@
+import { Item } from 'utilities/abstractions';
+import {
+  Dispatch,
+  SetStateAction,
+} from 'react';
+
+const getItemsCustomer = async (): Promise<Item[]> => {
+  const items: Item[] = [];
+  await fetch('http://127.0.0.1:8000/core/get_all_listings/', {
+    method: 'GET',
+    headers: {
+      Authorization: `JWT ${localStorage.getItem('token')}`,
+      'Content-Type': 'application/json',
+    },
+  })
+    .then((response) => {
+      if (!response.ok) {
+        // If the response is not OK, throw an error to catch it later
+        throw new Error('Failed to fetch listings. Please try again.');
+      }
+      return response.json();
+    })
+    .then((data) => {
+      items.push(...data);
+      return data;
+    })
+    .catch((error) => {
+      // Handle any errors that occurred during the fetch operation
+      console.error('Failed to fetch listings. Please try again.');
+    });
+  return items;
+};
+
+const checkout = (
+  goToStore: () => void,
+  items: Item[],
+  address: string,
+  zip: string,
+  phone: number,
+  card: number,
+  exp: string,
+  csc: number,
+  totalPrice: number,
+  setCheckoutTitle: Dispatch<SetStateAction<string>>,
+  setCheckoutMessage: Dispatch<SetStateAction<string>>,
+  setCheckoutDialogOpen: Dispatch<SetStateAction<boolean>>,
+): void => {
+  fetch('http://127.0.0.1:8000/core/place_order/', {
+    method: 'POST',
+    headers: {
+      Authorization: `JWT ${localStorage.getItem('token')}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      items,
+      address,
+      zip,
+      phone,
+      card,
+      exp,
+      csc,
+      totalPrice,
+    }),
+  })
+    .then((response) => {
+      if (!response.ok) {
+        // If the response is not OK, throw an error to catch it later
+        throw new Error('Failed to place order. Please try again.');
+      }
+      return response.json();
+    })
+    .then((data) => {
+      setCheckoutTitle('Order Placed');
+      setCheckoutMessage('Your order has been placed successfully.');
+      setCheckoutDialogOpen(true);
+    })
+    .catch((error) => {
+      // Handle any errors that occurred during the fetch operation
+      setCheckoutTitle('Failed to Place Order');
+      setCheckoutMessage('Please try again.');
+      setCheckoutDialogOpen(true);
+    });
+};
+
+const getItemsSeller = async (): Promise<Item[]> => {
+  const items: Item[] = [];
+  await fetch('http://127.0.0.1:8000/core/get_my_listings/', {
+    method: 'GET',
+    headers: {
+      Authorization: `JWT ${localStorage.getItem('token')}`,
+      'Content-Type': 'application/json',
+    },
+  })
+    .then((response) => {
+      if (!response.ok) {
+        // If the response is not OK, throw an error to catch it later
+        throw new Error('Failed to fetch listings. Please try again.');
+      }
+      return response.json();
+    })
+    .then((data) => {
+      items.push(...data);
+      return data;
+    })
+    .catch((error) => {
+      // Handle any errors that occurred during the fetch operation
+      console.error('Failed to fetch listings. Please try again.');
+    });
+  return items;
+};
+
+const deleteListing = (
+  id: number,
+  items: Item[],
+  setItems: Dispatch<SetStateAction<Item[]>>,
+  setDialogOpen: Dispatch<SetStateAction<boolean>>,
+  setDialogTitle: Dispatch<SetStateAction<string>>,
+  setDialogMessage: Dispatch<SetStateAction<string>>,
+): void => {
+  fetch('http://127.0.0.1:8000/core/delete_listing/', {
+    method: 'POST',
+    headers: {
+      Authorization: `JWT ${localStorage.getItem('token')}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      id,
+    }),
+  })
+    .then((response) => {
+      if (!response.ok) {
+        // If the response is not OK, throw an error to catch it later
+        throw new Error('Failed to delete listing. Please try again.');
+      }
+      return response.json();
+    })
+    .then((data) => {
+      const newItems = items.filter((item) => item.id !== id);
+      setItems(newItems);
+      setDialogOpen(true);
+      setDialogTitle('Listing Deleted');
+      setDialogMessage('Your listing has been deleted successfully.');
+    })
+    .catch((error) => {
+      // Handle any errors that occurred during the fetch operation
+      setDialogOpen(true);
+      setDialogTitle('Failed to Delete Listing');
+      setDialogMessage('Please try again.');
+    });
+};
+
+const createListing = (
+  name: string,
+  price: number,
+  imageUrl: string,
+  setDialogOpen: Dispatch<SetStateAction<boolean>>,
+  setDialogTitle: Dispatch<SetStateAction<string>>,
+  setDialogMessage: Dispatch<SetStateAction<string>>,
+  setItems: Dispatch<SetStateAction<Item[]>>,
+): void => {
+  fetch('http://127.0.0.1:8000/core/create_listing/', {
+    method: 'POST',
+    headers: {
+      Authorization: `JWT ${localStorage.getItem('token')}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      name,
+      price,
+      imageUrl,
+    }),
+  })
+    .then((response) => {
+      if (!response.ok) {
+        // If the response is not OK, throw an error to catch it later
+        throw new Error('Failed to create listing. Please try again.');
+      }
+      return response.json();
+    })
+    .then((data: Item) => {
+      setDialogOpen(true);
+      setDialogTitle('Product Added');
+      setDialogMessage('Product has been successfully added!');
+      setItems((prevItems) => [...prevItems, data]);
+    })
+    .catch((error) => {
+      // Handle any errors that occurred during the fetch operation
+      setDialogOpen(true);
+      setDialogTitle('Failed to Add Product');
+      setDialogMessage('Please try again.');
+    });
+};
+
+export {
+  getItemsCustomer,
+  getItemsSeller,
+  checkout,
+  deleteListing,
+  createListing,
+};

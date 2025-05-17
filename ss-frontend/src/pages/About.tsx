@@ -70,11 +70,21 @@ function About({
           </Link>
           <br />
           <b>License: </b>
-          <Link color="primary" href="https://www.gnu.org/licenses/gpl-3.0.en.html" target="_blank" rel="noreferrer">
+          <Link
+            color="primary"
+            href="https://github.com/VarunS2002/React-Django-Secure-E-Commerce/blob/master/LICENSE"
+            target="_blank"
+            rel="noreferrer"
+          >
             GNU GPLv3
           </Link>
           <br />
-          <Link color="primary" href="https://github.com/VarunS2002/Software_Security-CS6417_FR01B" target="_blank" rel="noreferrer">
+          <Link
+            color="primary"
+            href="https://github.com/VarunS2002/React-Django-Secure-E-Commerce"
+            target="_blank"
+            rel="noreferrer"
+          >
             Source Code
           </Link>
         </DialogContentText>

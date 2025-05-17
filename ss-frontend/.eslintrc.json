@@ -42,7 +42,9 @@
             }
         ],
         "no-shadow": "off",
+        "function-paren-newline": "warn",
         "@typescript-eslint/no-shadow": "error",
+        "@typescript-eslint/no-unused-vars": "warn",
         "@typescript-eslint/explicit-function-return-type": [
             "warn",
             {
@@ -55,6 +57,7 @@
                 "code": 120
             }
         ],
+        "@typescript-eslint/no-unused-expressions": "off",
         "camelcase": "warn",
         "react-hooks/rules-of-hooks": "error",
         "react-hooks/exhaustive-deps": "warn",
@@ -63,6 +66,7 @@
         "jsx-a11y/anchor-is-valid": "off",
         "jsx-a11y/anchor-has-content": "off",
         "no-console": "warn",
+        "react/jsx-no-useless-fragment": "warn",
         "react/jsx-key": [
             "warn",
             {

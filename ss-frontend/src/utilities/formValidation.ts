@@ -1,3 +1,4 @@
+import React from 'react';
 import type {
   ChangeEvent,
   Dispatch,
@@ -5,7 +6,6 @@ import type {
   SetStateAction,
 } from 'react';
 import { FormModes } from 'utilities/abstractions';
-import React from 'react';
 import DOMPurify from 'dompurify';
 
 const focusAndSetCursorToEnd = (id: string, onlyFocus = false): void => {
@@ -419,9 +419,11 @@ const validateFeedback = (
   }
 };
 
-const validateAddress = (event: ChangeEvent<HTMLInputElement>,
+const validateAddress = (
+  event: ChangeEvent<HTMLInputElement>,
   setAddress: Dispatch<SetStateAction<string>>,
-  setAddressError: Dispatch<SetStateAction<string>>) => {
+  setAddressError: Dispatch<SetStateAction<string>>,
+): void => {
   const isUpTo100Characters = event.target.value.length <= 100;
   if (isUpTo100Characters) {
     setAddressError('');
@@ -437,9 +439,11 @@ const validateAddress = (event: ChangeEvent<HTMLInputElement>,
   }
 };
 
-const validateZip = (event: ChangeEvent<HTMLInputElement>,
+const validateZip = (
+  event: ChangeEvent<HTMLInputElement>,
   setZip: Dispatch<SetStateAction<string>>,
-  setZipError: Dispatch<SetStateAction<string>>) => {
+  setZipError: Dispatch<SetStateAction<string>>,
+): void => {
   const isZip = !!event.target.value.match(/^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/);
   if (isZip) {
     setZipError('');
@@ -455,9 +459,11 @@ const validateZip = (event: ChangeEvent<HTMLInputElement>,
   }
 };
 
-const validatePhone = (event: ChangeEvent<HTMLInputElement>,
+const validatePhone = (
+  event: ChangeEvent<HTMLInputElement>,
   setPhone: Dispatch<SetStateAction<number>>,
-  setPhoneError: Dispatch<SetStateAction<string>>) => {
+  setPhoneError: Dispatch<SetStateAction<string>>,
+) : void => {
   const isPhone = !!Number(event.target.value)
     .toString()
     .match(/^\d{10}$/);
@@ -476,9 +482,11 @@ const validatePhone = (event: ChangeEvent<HTMLInputElement>,
   }
 };
 
-const validateCard = (event: ChangeEvent<HTMLInputElement>,
+const validateCard = (
+  event: ChangeEvent<HTMLInputElement>,
   setCard: Dispatch<SetStateAction<number>>,
-  setCardError: Dispatch<SetStateAction<string>>) => {
+  setCardError: Dispatch<SetStateAction<string>>,
+) : void => {
   const isCard = !!event.target.value.match(/^\d{16}$/);
   if (isCard) {
     setCardError('');
@@ -495,9 +503,11 @@ const validateCard = (event: ChangeEvent<HTMLInputElement>,
   }
 };
 
-const validateCsc = (event: ChangeEvent<HTMLInputElement>,
+const validateCsc = (
+  event: ChangeEvent<HTMLInputElement>,
   setCsc: Dispatch<SetStateAction<number>>,
-  setCscError: Dispatch<SetStateAction<string>>) => {
+  setCscError: Dispatch<SetStateAction<string>>,
+) : void => {
   const isCvc = !!event.target.value.match(/^\d{3}$/);
   if (isCvc) {
     setCscError('');
@@ -514,9 +524,11 @@ const validateCsc = (event: ChangeEvent<HTMLInputElement>,
   }
 };
 
-const validateExp = (event: ChangeEvent<HTMLInputElement>,
+const validateExp = (
+  event: ChangeEvent<HTMLInputElement>,
   setExp: Dispatch<SetStateAction<string>>,
-  setExpError: Dispatch<SetStateAction<string>>) => {
+  setExpError: Dispatch<SetStateAction<string>>,
+) : void => {
   const isExp = !!event.target.value.match(/^(0[1-9]|1[0-2])\/([0-9]{2})$/);
 
   if (isExp) {

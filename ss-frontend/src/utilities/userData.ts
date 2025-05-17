@@ -1,12 +1,11 @@
-import {
-  UserDetails,
-  UserTypes,
-} from 'utilities/abstractions';
-import {
+import type {
   Dispatch,
   SetStateAction,
 } from 'react';
+import { UserTypes } from 'utilities/abstractions';
+import type { UserDetails } from 'utilities/abstractions';
 import { signOut } from 'utilities/authentication';
+import { API_URL } from 'utilities/api';
 
 const getUserType = (): UserTypes => {
   const userType = localStorage.getItem('userType');
@@ -40,7 +39,7 @@ const getUserData = async (
   let tokenExpired = false;
   if (token !== null) {
     if (getIsSignedIn() || getRememberMe()) {
-      await fetch('http://127.0.0.1:8000/core/current_user/', {
+      await fetch(`${API_URL}/core/current_user/`, {
         headers: {
           Authorization: `JWT ${token}`,
         },

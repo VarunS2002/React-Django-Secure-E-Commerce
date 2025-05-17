@@ -1,12 +1,13 @@
-import { Item } from 'utilities/abstractions';
-import {
+import type {
   Dispatch,
   SetStateAction,
 } from 'react';
+import type { Item } from 'utilities/abstractions';
+import { API_URL } from 'utilities/api';
 
 const getItemsCustomer = async (): Promise<Item[]> => {
   const items: Item[] = [];
-  await fetch('http://127.0.0.1:8000/core/get_all_listings/', {
+  await fetch(`${API_URL}/core/get_all_listings/`, {
     method: 'GET',
     headers: {
       Authorization: `JWT ${localStorage.getItem('token')}`,
@@ -45,7 +46,7 @@ const checkout = (
   setCheckoutMessage: Dispatch<SetStateAction<string>>,
   setCheckoutDialogOpen: Dispatch<SetStateAction<boolean>>,
 ): void => {
-  fetch('http://127.0.0.1:8000/core/place_order/', {
+  fetch(`${API_URL}/core/place_order/`, {
     method: 'POST',
     headers: {
       Authorization: `JWT ${localStorage.getItem('token')}`,
@@ -84,7 +85,7 @@ const checkout = (
 
 const getItemsSeller = async (): Promise<Item[]> => {
   const items: Item[] = [];
-  await fetch('http://127.0.0.1:8000/core/get_my_listings/', {
+  await fetch(`${API_URL}/core/get_my_listings/`, {
     method: 'GET',
     headers: {
       Authorization: `JWT ${localStorage.getItem('token')}`,
@@ -117,7 +118,7 @@ const deleteListing = (
   setDialogTitle: Dispatch<SetStateAction<string>>,
   setDialogMessage: Dispatch<SetStateAction<string>>,
 ): void => {
-  fetch('http://127.0.0.1:8000/core/delete_listing/', {
+  fetch(`${API_URL}/core/delete_listing/`, {
     method: 'POST',
     headers: {
       Authorization: `JWT ${localStorage.getItem('token')}`,
@@ -158,7 +159,7 @@ const createListing = (
   setDialogMessage: Dispatch<SetStateAction<string>>,
   setItems: Dispatch<SetStateAction<Item[]>>,
 ): void => {
-  fetch('http://127.0.0.1:8000/core/create_listing/', {
+  fetch(`${API_URL}/core/create_listing/`, {
     method: 'POST',
     headers: {
       Authorization: `JWT ${localStorage.getItem('token')}`,

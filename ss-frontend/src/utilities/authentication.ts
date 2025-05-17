@@ -1,11 +1,10 @@
-import {
+import type {
   Dispatch,
   SetStateAction,
 } from 'react';
-import {
-  UserDetails,
-  UserTypes,
-} from 'utilities/abstractions';
+import { UserTypes } from 'utilities/abstractions';
+import type { UserDetails } from 'utilities/abstractions';
+import { API_URL } from 'utilities/api';
 
 const signIn = (
   email: string,
@@ -22,7 +21,7 @@ const signIn = (
   setSignInMessage: Dispatch<SetStateAction<string>>,
 ): void => {
   try {
-    fetch('http://127.0.0.1:8000/token-auth/', {
+    fetch(`${API_URL}/token-auth/`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -102,7 +101,7 @@ const signUp = (
   setSignUpMessage: Dispatch<SetStateAction<string>>,
 ): void => {
   try {
-    fetch('http://127.0.0.1:8000/core/user_signup/', {
+    fetch(`${API_URL}/core/user_signup/`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -149,7 +148,7 @@ const sendPasswordResetEmail = (
   setResetMode: Dispatch<SetStateAction<boolean>>,
 ): void => {
   try {
-    fetch('http://127.0.0.1:8000/core/generate_otp/', {
+    fetch(`${API_URL}/core/generate_otp/`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -195,18 +194,17 @@ const resetPassword = (
   changeMode: () => void,
 ): void => {
   try {
-    fetch('http://127.0.0.1:8000/core/reset_password/',
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email,
-          otp,
-          password,
-        }),
-      })
+    fetch(`${API_URL}/core/reset_password/`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email,
+        otp,
+        password,
+      }),
+    })
       .then((response) => {
         if (!response.ok) {
           // If the response is not OK, throw an error to catch it later
@@ -239,7 +237,7 @@ const sendFeedback = (
   setFeedbackMessage: Dispatch<SetStateAction<string>>,
 ): void => {
   try {
-    fetch('http://127.0.0.1:8000/core/feedback/', {
+    fetch(`${API_URL}/core/feedback/`, {
       method: 'POST',
       headers: {
         Authorization: `JWT ${localStorage.getItem('token')}`,

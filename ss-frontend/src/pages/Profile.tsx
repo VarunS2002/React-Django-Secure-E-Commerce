@@ -1,6 +1,7 @@
 import React from 'react';
 import type {
   Dispatch,
+  JSX,
   SetStateAction,
 } from 'react';
 import {
@@ -11,23 +12,31 @@ import {
   Grid,
   Paper,
   Typography,
-} from '@material-ui/core';
+  styled,
+} from '@mui/material';
 import { MdLogout } from 'react-icons/md';
-import { profileStyles } from 'utilities/styles/styles';
-import {
-  UserDetails,
-} from 'utilities/abstractions';
+import type { UserDetails } from 'utilities/abstractions';
 
 type Props = {
   setSignOutConfirmationOpen: Dispatch<SetStateAction<boolean>>;
-  userDetails: UserDetails
+  userDetails: UserDetails;
 };
+
+const CenteredDialogContent = styled(DialogContent)(() => ({
+  textAlign: 'center',
+  marginLeft: 'auto',
+  marginRight: 'auto',
+}));
+
+const SmallAvatar = styled(Avatar)(() => ({
+  width: 40,
+  height: 40,
+}));
 
 function Profile({
   setSignOutConfirmationOpen,
   userDetails,
 }: Props): JSX.Element {
-  const classes = profileStyles();
   let { phoneNumber } = userDetails;
   if (phoneNumber !== '' && phoneNumber !== null && phoneNumber !== undefined) {
     phoneNumber = `${phoneNumber.slice(0, -10)} ${phoneNumber.slice(-10)
@@ -36,39 +45,46 @@ function Profile({
 
   return (
     <Paper>
-      <DialogContent className={classes.center}>
+      <CenteredDialogContent>
         <Grid
           container
           direction="column"
-          alignContent="center"
+          alignItems="center"
           justifyContent="center"
           spacing={2}
         >
-          <Grid item className={classes.center}>
-            <Avatar className={classes.avatar}>{userDetails.firstName[0]}</Avatar>
+          <Grid>
+            <SmallAvatar>
+              {userDetails.firstName[0]}
+            </SmallAvatar>
           </Grid>
-          <Grid item className={classes.center}>
-            <Typography variant="h6" color="textPrimary">
+
+          <Grid>
+            <Typography variant="h6" color="text.primary" align="center">
               {`${userDetails.firstName} ${userDetails.lastName}`}
             </Typography>
-            {userDetails.email}
-            <br />
-            {phoneNumber}
+            <Typography variant="body2" align="center">
+              {userDetails.email}
+              <br />
+              {phoneNumber}
+            </Typography>
           </Grid>
-          <Grid item className={classes.center} />
+
+          <Grid>
+            <DialogContentText align="center">
+              <Button
+                color="primary"
+                variant="outlined"
+                size="small"
+                startIcon={<MdLogout />}
+                onClick={() => setSignOutConfirmationOpen(true)}
+              >
+                Sign Out
+              </Button>
+            </DialogContentText>
+          </Grid>
         </Grid>
-        <DialogContentText>
-          <Button
-            color="primary"
-            variant="outlined"
-            size="small"
-            startIcon={<MdLogout />}
-            onClick={() => setSignOutConfirmationOpen(true)}
-          >
-            Sign Out
-          </Button>
-        </DialogContentText>
-      </DialogContent>
+      </CenteredDialogContent>
     </Paper>
   );
 }

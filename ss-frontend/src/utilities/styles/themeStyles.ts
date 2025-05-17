@@ -1,9 +1,9 @@
-import { createTheme } from '@material-ui/core/';
-import type { Theme } from '@material-ui/core/';
+import { createTheme } from '@mui/material';
+import type { Theme } from '@mui/material';
 
 const themeStyles = (): Theme => createTheme({
   palette: {
-    type: 'dark',
+    mode: 'dark',
     primary: {
       main: '#3880FF',
     },
@@ -12,24 +12,27 @@ const themeStyles = (): Theme => createTheme({
     },
     background: {
       default: '#121212',
-      paper: '#303030',
     },
   },
-  overrides: {
+  components: {
     MuiInputBase: {
-      input: {
-        '&:-webkit-autofill': {
-          transitionDelay: '9999s',
-          transitionProperty: 'background-color, color',
+      styleOverrides: {
+        input: {
+          '&:-webkit-autofill': {
+            transitionDelay: '9999s',
+            transitionProperty: 'background-color, color',
+          },
         },
       },
     },
     MuiOutlinedInput: {
-      input: {
-        '&:-webkit-autofill': {
-          WebkitBoxShadow: 'inherit',
-          WebkitTextFillColor: 'inherit',
-          caretColor: 'inherit',
+      styleOverrides: {
+        input: {
+          '&:-webkit-autofill': {
+            WebkitBoxShadow: 'inherit',
+            WebkitTextFillColor: 'inherit',
+            caretColor: 'inherit',
+          },
         },
       },
     },

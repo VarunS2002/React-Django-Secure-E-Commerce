@@ -1,29 +1,26 @@
-import React, {
-  useState,
-} from 'react';
+import React, { useState } from 'react';
 import type {
   Dispatch,
+  JSX,
   SetStateAction,
 } from 'react';
 import {
   AppBar,
+  Box,
   Divider,
   Drawer,
-  Hidden,
   IconButton,
   List,
+  styled,
   Toolbar,
   Typography,
-} from '@material-ui/core';
+} from '@mui/material';
 import {
   ChevronLeft,
   Menu,
-} from '@material-ui/icons/';
-import { navigationBarStyles } from 'utilities/styles/styles';
-import {
-  UserDetails,
-  UserTypes,
-} from 'utilities/abstractions';
+} from '@mui/icons-material';
+import { UserTypes } from 'utilities/abstractions';
+import type { UserDetails } from 'utilities/abstractions';
 import DrawerItems from 'pages/DrawerItems';
 import ToolBarItems from 'pages/ToolBarItems';
 
@@ -34,13 +31,121 @@ type Props = {
   userDetails: UserDetails,
 };
 
+const AppTitleText = styled(Typography)(() => ({
+  flexGrow: 1,
+}));
+
+const PhoneMenuButton = styled(IconButton)(({ theme }) => ({
+  // Desktop
+  [theme.breakpoints.up('sm')]: {
+    marginRight: 24,
+    marginLeft: -19,
+  },
+  // Phone
+  [theme.breakpoints.down('xs')]: {
+    marginRight: theme.spacing(2),
+  },
+}));
+
+const drawerWidth = 180;
+
+const StyledAppBar = styled(AppBar, {
+  shouldForwardProp: (prop) => prop !== 'open',
+})<{ open?: boolean }>(({ theme, open }) => ({
+  // Desktop
+  zIndex: theme.zIndex.drawer + 1,
+  transition: theme.transitions.create(['width', 'margin'], {
+    easing: theme.transitions.easing.sharp,
+    duration: theme.transitions.duration.leavingScreen,
+  }),
+  // Desktop
+  ...(open && {
+    marginLeft: drawerWidth,
+    width: `calc(100% - ${drawerWidth}px)`,
+    transition: theme.transitions.create(['width', 'margin'], {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
+  }),
+}));
+
+const DesktopMenuButton = styled(IconButton, {
+  shouldForwardProp: (prop) => prop !== 'open',
+})<{ open?: boolean }>(({ theme, open }) => ({
+  // Desktop
+  [theme.breakpoints.up('sm')]: {
+    marginRight: 24,
+    marginLeft: -19,
+  },
+  // Phone
+  [theme.breakpoints.down('xs')]: {
+    marginRight: theme.spacing(2),
+  },
+  // Desktop
+  ...(open && {
+    display: 'none',
+  }),
+}));
+
+const ToolbarSpacer = styled('div')(({ theme }) => ({
+  // Desktop
+  [theme.breakpoints.up('sm')]: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    padding: theme.spacing(0, 1),
+    ...theme.mixins.toolbar,
+  },
+  // Phone
+  [theme.breakpoints.down('xs')]: {
+    ...theme.mixins.toolbar,
+  },
+}));
+
+const PhoneStyledDrawer = styled(Drawer)(({ theme }) => ({
+  '& .MuiDrawer-paper': {
+    width: drawerWidth,
+    // Desktop
+    [theme.breakpoints.up('sm')]: {
+      flexShrink: 0,
+      whiteSpace: 'nowrap',
+    },
+  },
+}));
+
+const DesktopStyledDrawer = styled(Drawer, {
+  shouldForwardProp: (prop) => prop !== 'open',
+})<{ open: boolean }>(({ theme, open }) => ({
+  width: open ? drawerWidth : theme.spacing(7),
+  transition: theme.transitions.create('width', {
+    easing: theme.transitions.easing.sharp,
+    duration: open
+      ? theme.transitions.duration.enteringScreen
+      : theme.transitions.duration.leavingScreen,
+  }),
+  boxSizing: 'border-box',
+  '& .MuiDrawer-paper': {
+    width: open ? drawerWidth : theme.spacing(7),
+    transition: theme.transitions.create('width', {
+      easing: theme.transitions.easing.sharp,
+      duration: open
+        ? theme.transitions.duration.enteringScreen
+        : theme.transitions.duration.leavingScreen,
+    }),
+    overflowX: open ? 'initial' : 'hidden',
+    whiteSpace: 'nowrap',
+    [theme.breakpoints.up('sm')]: {
+      flexShrink: 0,
+    },
+  },
+}));
+
 function NavigationBar({
   signedIn,
   setSignedIn,
   userType,
   userDetails,
 }: Props): JSX.Element {
-  const classes = navigationBarStyles();
   const [navigationBarIsOpen, setNavigationBarIsOpen] = useState(false);
 
   const handleDrawerChange = (): void => {
@@ -51,20 +156,19 @@ function NavigationBar({
     <>
       {/* AppBar */}
       {/* Phone */}
-      <Hidden smUp implementation="js">
-        <AppBar position="fixed">
+      <Box sx={{ display: { xs: 'block', sm: 'none' } }}>
+        <AppBar position="fixed" color="primary" enableColorOnDark>
           <Toolbar>
-            <IconButton
+            <PhoneMenuButton
               color="inherit"
               edge="start"
               onClick={handleDrawerChange}
-              className={classes.menuButton}
             >
               <Menu />
-            </IconButton>
-            <Typography variant="h6" noWrap className={classes.title}>
+            </PhoneMenuButton>
+            <AppTitleText variant="h6" noWrap>
               Secure E-Commerce
-            </Typography>
+            </AppTitleText>
             <ToolBarItems
               signedIn={signedIn}
               setSignedIn={setSignedIn}
@@ -72,50 +176,44 @@ function NavigationBar({
             />
           </Toolbar>
         </AppBar>
-      </Hidden>
+      </Box>
       {/* Desktop */}
-      <Hidden xsDown implementation="js">
-        <AppBar
-          position="fixed"
-          className={`${classes.appBar} ${navigationBarIsOpen ? classes.appBarShift : ''}`}
-        >
+      <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
+        <StyledAppBar position="fixed" open={navigationBarIsOpen} color="primary" enableColorOnDark>
           <Toolbar>
-            <IconButton
+            <DesktopMenuButton
               color="inherit"
               onClick={handleDrawerChange}
               edge="start"
-              className={`${classes.menuButton} ${navigationBarIsOpen ? classes.hide : ''}`}
             >
               <Menu />
-            </IconButton>
-            <Typography variant="h6" noWrap className={classes.title}>
+            </DesktopMenuButton>
+            <AppTitleText variant="h6" noWrap>
               Secure E-Commerce
-            </Typography>
+            </AppTitleText>
             <ToolBarItems
               signedIn={signedIn}
               setSignedIn={setSignedIn}
               userDetails={userDetails}
             />
           </Toolbar>
-        </AppBar>
-      </Hidden>
+        </StyledAppBar>
+      </Box>
       {/* Drawer */}
       {/* Phone */}
-      <Hidden smUp implementation="js">
+      <Box sx={{ display: { xs: 'block', sm: 'none' } }}>
         <nav>
-          <Drawer
+          <PhoneStyledDrawer
             variant="temporary"
             anchor="left"
             open={navigationBarIsOpen}
             onClose={handleDrawerChange}
-            classes={{
-              paper: classes.drawerPaper,
-            }}
             ModalProps={{
               keepMounted: true,
             }}
+            sx={{ display: { xs: 'block', sm: 'none' } }}
           >
-            <div className={classes.toolbar} />
+            <ToolbarSpacer />
             <Divider />
             {signedIn
               ? (
@@ -131,7 +229,7 @@ function NavigationBar({
                   <Divider />
                 </>
               )
-              : <></>}
+              : null}
             <List>
               <DrawerItems
                 section={2}
@@ -141,21 +239,17 @@ function NavigationBar({
               />
             </List>
             <Divider />
-          </Drawer>
+          </PhoneStyledDrawer>
         </nav>
-      </Hidden>
+      </Box>
       {/* Desktop */}
-      <Hidden xsDown implementation="js">
-        <Drawer
-          variant="permanent"
-          className={`${classes.drawerPaper} ${navigationBarIsOpen ? classes.drawerOpen : classes.drawerClose}`}
-          classes={{ paper: `${navigationBarIsOpen ? classes.drawerOpen : classes.drawerClose}` }}
-        >
-          <div className={classes.toolbar}>
+      <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
+        <DesktopStyledDrawer variant="permanent" open={navigationBarIsOpen}>
+          <ToolbarSpacer>
             <IconButton onClick={handleDrawerChange}>
               <ChevronLeft />
             </IconButton>
-          </div>
+          </ToolbarSpacer>
           <Divider />
           {signedIn
             ? (
@@ -171,7 +265,7 @@ function NavigationBar({
                 <Divider />
               </>
             )
-            : <></>}
+            : null}
           <List>
             <DrawerItems
               section={2}
@@ -181,8 +275,8 @@ function NavigationBar({
             />
           </List>
           <Divider />
-        </Drawer>
-      </Hidden>
+        </DesktopStyledDrawer>
+      </Box>
     </>
   );
 }

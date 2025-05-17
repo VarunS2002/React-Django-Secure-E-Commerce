@@ -1,6 +1,7 @@
 import React from 'react';
 import type {
   Dispatch,
+  JSX,
   SetStateAction,
 } from 'react';
 import {
@@ -10,7 +11,7 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
-} from '@material-ui/core';
+} from '@mui/material';
 
 type Props = {
   title: string,
@@ -49,7 +50,7 @@ function ConfirmationDialog({
         <DialogContentText>{message}</DialogContentText>
       </DialogContent>
       <DialogActions>
-        {oneAction ? <></> : <Button onClick={() => setOpen(false)} color="primary">No</Button>}
+        {oneAction ? null : <Button onClick={() => setOpen(false)} color="primary">No</Button>}
         <Button
           onClick={() => {
             if (onConfirm) {

@@ -1,6 +1,7 @@
 import React from 'react';
 import type {
   Dispatch,
+  JSX,
   SetStateAction,
 } from 'react';
 import {
@@ -12,21 +13,44 @@ import {
   Grid,
   Link,
   Typography,
-} from '@material-ui/core';
-import { aboutStyles } from 'utilities/styles/styles';
+  styled,
+} from '@mui/material';
 
 type Props = {
-  open: boolean,
-  setOpen: Dispatch<SetStateAction<boolean>>,
-}
+  open: boolean;
+  setOpen: Dispatch<SetStateAction<boolean>>;
+};
 
-function About({
-  open,
-  setOpen,
-}: Props): JSX.Element {
-  const classes = aboutStyles();
+const CenteredDialogTitle = styled(DialogTitle)(() => ({
+  textAlign: 'center',
+  marginTop: 'auto',
+  marginBottom: 'auto',
+}));
+
+const CenteredDialogContent = styled(DialogContent)(() => ({
+  textAlign: 'center',
+  marginTop: 'auto',
+  marginBottom: 'auto',
+}));
+
+const LogoAvatar = styled(Avatar)(() => ({
+  width: 40,
+  height: 40,
+}));
+
+const NameTypography = styled(Typography)(() => ({
+  fontSize: '1.3rem',
+  fontWeight: 'bold',
+}));
+
+const LinkContentText = styled(DialogContentText)(() => ({
+  fontSize: 15,
+  lineHeight: 2,
+}));
+
+function About({ open, setOpen }: Props): JSX.Element {
   const version = '1.0.0';
-  const description = 'Secure E-Commerce created using React and Django.';
+  const description = 'Secure E-Commerce website created using React and Django.';
 
   const closeDialog = (): void => {
     setOpen(false);
@@ -34,38 +58,42 @@ function About({
 
   return (
     <Dialog open={open} onClose={closeDialog} maxWidth="xs">
-      <DialogTitle className={classes.center}>About</DialogTitle>
-      <DialogContent className={classes.center}>
+      <CenteredDialogTitle>About</CenteredDialogTitle>
+      <CenteredDialogContent>
         <Grid
           container
           direction="row"
-          alignContent="center"
+          alignItems="center"
           justifyContent="center"
           spacing={2}
         >
-          <Grid item className={classes.center}>
-            <Avatar
+          <Grid>
+            <LogoAvatar
               variant="rounded"
               alt="Logo"
               src={`${process.env.PUBLIC_URL}/logo512.png`}
-              className={classes.logo}
             />
             <br />
           </Grid>
-          <Grid item className={classes.center}>
-            <Typography variant="h6" color="textPrimary" className={classes.name}>
+          <Grid>
+            <NameTypography variant="h6" color="textPrimary">
               Secure E-Commerce
-            </Typography>
+            </NameTypography>
             <br />
           </Grid>
         </Grid>
         <DialogContentText>{description}</DialogContentText>
-        <DialogContentText className={classes.links} color="textPrimary">
+        <LinkContentText color="textPrimary">
           <b>Version: </b>
           {version}
           <br />
           <b>Author: </b>
-          <Link color="primary" href="https://github.com/VarunS2002" target="_blank" rel="noreferrer">
+          <Link
+            color="primary"
+            href="https://github.com/VarunS2002"
+            target="_blank"
+            rel="noreferrer"
+          >
             Varun Shanbhag
           </Link>
           <br />
@@ -87,8 +115,8 @@ function About({
           >
             Source Code
           </Link>
-        </DialogContentText>
-      </DialogContent>
+        </LinkContentText>
+      </CenteredDialogContent>
     </Dialog>
   );
 }

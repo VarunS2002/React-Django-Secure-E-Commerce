@@ -1,8 +1,9 @@
-import React, {
+import React, { useState } from 'react';
+import type {
   ChangeEvent,
+  JSX,
   Dispatch,
   SetStateAction,
-  useState,
 } from 'react';
 import {
   Button,
@@ -11,13 +12,13 @@ import {
   DialogContent,
   DialogTitle,
   TextField,
-} from '@material-ui/core';
+} from '@mui/material';
 import {
   focusAndSetCursorToEnd,
   validateFeedback,
 } from 'utilities/formValidation';
-import { sendFeedback } from '../utilities/authentication';
-import ConfirmationDialog from './ConfirmationDialog';
+import { sendFeedback } from 'utilities/authentication';
+import ConfirmationDialog from 'pages/ConfirmationDialog';
 
 type Props = {
   open: boolean,
@@ -34,12 +35,12 @@ function FeedbackForm({
   const [feedbackTitle, setFeedbackTitle] = useState('');
   const [feedbackMessage, setFeedbackMessage] = useState('');
 
-  const handleClose = () => {
+  const handleClose = (): void => {
     setFeedback('');
     setFeedbackError('');
     setOpen(false);
   };
-  const handleSubmit = () => {
+  const handleSubmit = (): void => {
     if (feedback === '') {
       setFeedbackError('Feedback cannot be empty');
       focusAndSetCursorToEnd('feedback');
@@ -67,9 +68,7 @@ function FeedbackForm({
             fullWidth
             required
             style={{ width: '300px' }}
-            onChange={(event: ChangeEvent<HTMLInputElement>) => validateFeedback(
-              event, setFeedback, setFeedbackError,
-            )}
+            onChange={(event: ChangeEvent<HTMLInputElement>) => validateFeedback(event, setFeedback, setFeedbackError)}
             multiline
             rows={5}
           />

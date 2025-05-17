@@ -1,4 +1,5 @@
 import React, {
+  type JSX,
   useState,
 } from 'react';
 import {
@@ -6,32 +7,31 @@ import {
   TextField,
   Button,
   Typography,
-} from '@material-ui/core';
-import { signUpStyles } from 'utilities/styles/styles';
+  styled,
+} from '@mui/material';
 import {
   validateBeforeCreateListing,
   validateImgUrl,
   validatePrice,
   validateProductName,
 } from 'utilities/formValidation';
-import { useHistory } from 'react-router-dom'; // Assuming signUpStyles can be reused for form styling
+import { useNavigate } from 'react-router-dom';
 import { createListing } from 'utilities/listings';
 import ConfirmationDialog from 'pages/ConfirmationDialog';
-import { Item } from 'utilities/abstractions';
+import type { Item } from 'utilities/abstractions';
 
 type Props = {
-  items: Item[];
   setItems: React.Dispatch<React.SetStateAction<Item[]>>;
 }
 
-const CreateListingForm = (
-  {
-    items,
-    setItems,
-  }: Props,
-) => {
-  const history = useHistory();
-  const classes = signUpStyles(); // Reuse styles from signUpStyles or define new styles as needed
+const SubmitButton = styled(Button)(({ theme }) => ({
+  margin: theme.spacing(1, 0, 1),
+}));
+
+function CreateListingForm({
+  setItems,
+}: Props): JSX.Element {
+  const navigate = useNavigate();
   const [name, setName] = useState('');
   const [nameError, setNameError] = useState('');
   const [price, setPrice] = useState(0);
@@ -55,11 +55,14 @@ const CreateListingForm = (
         onSubmit={(event) => {
           if (validateBeforeCreateListing(
             event,
-            name, setNameError, price, setPriceError, imageUrl, setImageUrlError,
+            name,
+            setNameError,
+            price,
+            setPriceError,
+            imageUrl,
+            setImageUrlError,
           )) {
-            createListing(
-              name, price, imageUrl, setDialogOpen, setDialogTitle, setDialogMessage, setItems,
-            );
+            createListing(name, price, imageUrl, setDialogOpen, setDialogTitle, setDialogMessage, setItems);
           }
         }}
         noValidate
@@ -76,9 +79,7 @@ const CreateListingForm = (
           name="name"
           autoComplete="pname"
           onChange={(event) => {
-            validateProductName(
-              event, setName, setNameError,
-            );
+            validateProductName(event, setName, setNameError);
           }}
         />
         <TextField
@@ -94,9 +95,7 @@ const CreateListingForm = (
           type="number"
           autoComplete="price"
           onChange={(event) => {
-            validatePrice(
-              event, setPrice, setPriceError,
-            );
+            validatePrice(event, setPrice, setPriceError);
           }}
         />
         <TextField
@@ -111,31 +110,27 @@ const CreateListingForm = (
           name="imageUrl"
           autoComplete="image-url"
           onChange={(event) => {
-            validateImgUrl(
-              event, setImageUrl, setImageUrlError,
-            );
+            validateImgUrl(event, setImageUrl, setImageUrlError);
           }}
         />
-        <Button
+        <SubmitButton
           type="submit"
           fullWidth
           variant="contained"
           color="primary"
-          className={classes.submit}
         >
           Create Listing
-        </Button>
-        <Button
+        </SubmitButton>
+        <SubmitButton
           fullWidth
           variant="contained"
           color="secondary"
-          className={classes.submit}
           onClick={() => {
-            history.push('/listings');
+            navigate('/listings');
           }}
         >
           Cancel
-        </Button>
+        </SubmitButton>
       </form>
       <ConfirmationDialog
         title={dialogTitle}
@@ -145,17 +140,17 @@ const CreateListingForm = (
         setOpen={setDialogOpen}
         onClose={() => {
           if (dialogTitle === 'Product Added') {
-            history.push('/listings');
+            navigate('/listings');
           }
         }}
         onConfirm={() => {
           if (dialogTitle === 'Product Added') {
-            history.push('/listings');
+            navigate('/listings');
           }
         }}
       />
     </Container>
   );
-};
+}
 
 export default CreateListingForm;

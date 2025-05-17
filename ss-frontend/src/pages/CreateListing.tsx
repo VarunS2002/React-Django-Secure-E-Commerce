@@ -1,13 +1,11 @@
-import React, {
-  Dispatch,
-  SetStateAction,
-} from 'react';
-import { Fab } from '@material-ui/core';
-import { Add } from '@material-ui/icons';
-import { useHistory } from 'react-router-dom';
+import React from 'react';
+import type { JSX } from 'react';
+import { Fab } from '@mui/material';
+import { Add } from '@mui/icons-material';
+import { useNavigate } from 'react-router-dom';
 
 function CreateListing(): JSX.Element {
-  const history = useHistory();
+  const navigate = useNavigate();
 
   return (
     <div>
@@ -15,7 +13,7 @@ function CreateListing(): JSX.Element {
         color="primary"
         aria-label="add"
         onClick={() => {
-          history.push('/create-listing');
+          navigate('/create-listing');
         }}
         style={{
           position: 'fixed',

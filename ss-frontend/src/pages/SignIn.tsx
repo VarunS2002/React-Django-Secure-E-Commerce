@@ -1,12 +1,12 @@
-import React, {
-  useState,
-} from 'react';
+import React, { useState } from 'react';
 import type {
   ChangeEvent,
   Dispatch,
+  JSX,
   SetStateAction,
 } from 'react';
 import {
+  Box,
   Button,
   Container,
   FormControl,
@@ -17,13 +17,13 @@ import {
   InputLabel,
   Link,
   OutlinedInput,
+  styled,
   TextField,
-} from '@material-ui/core';
+} from '@mui/material';
 import {
   Visibility,
   VisibilityOff,
-} from '@material-ui/icons';
-import { signInStyles } from 'utilities/styles/styles';
+} from '@mui/icons-material';
 import { signIn } from 'utilities/authentication';
 import {
   focusAndSetCursorToEnd,
@@ -35,8 +35,8 @@ import { getRememberMe } from 'utilities/userData';
 import {
   UserTypes,
   FormModes,
-  UserDetails,
 } from 'utilities/abstractions';
+import type { UserDetails } from 'utilities/abstractions';
 import ConfirmationDialog from 'pages/ConfirmationDialog';
 
 type Props = {
@@ -48,6 +48,34 @@ type Props = {
   setUserDetails: Dispatch<SetStateAction<UserDetails>>,
 };
 
+const PaperContainer = styled(Box)(() => ({
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+}));
+
+const SubmitButton = styled(Button)(({ theme }) => ({
+  margin: theme.spacing(1, 0, 1),
+}));
+
+const RememberMeContainer = styled(Grid)(() => ({
+  textAlign: 'left',
+}));
+
+const ForgotPasswordContainer = styled(Grid)(({ theme }) => ({
+  margin: theme.spacing(1, 0, 1),
+  justifyContent: 'space-between',
+  flex: 1,
+  alignItems: 'center',
+}));
+
+// Phone
+const StyledLink = styled(Link)(({ theme }) => ({
+  [theme.breakpoints.down('xs')]: {
+    fontSize: 13,
+  },
+}));
+
 function SignIn({
   changeMode,
   setModeToForgotPassword,
@@ -56,7 +84,6 @@ function SignIn({
   setSignedIn,
   setUserDetails,
 }: Props): JSX.Element {
-  const classes = signInStyles();
   const [signInDialogOpen, setSignInDialogOpen] = useState(false);
   const [signInTitle, setSignInTitle] = useState('');
   const [signInMessage, setSignInMessage] = useState('');
@@ -65,11 +92,12 @@ function SignIn({
   const [password, setPassword] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  // TODO: Implement
   const [rememberMe, setRememberMe] = useState(getRememberMe());
 
   return (
     <Container component="main" maxWidth="xs">
-      <div className={classes.paper}>
+      <PaperContainer>
         <form
           noValidate
           onSubmit={(event) => {
@@ -100,9 +128,7 @@ function SignIn({
         >
           <TextField
             error={emailError !== ''}
-            onChange={(event: ChangeEvent<HTMLInputElement>) => validateEmail(
-              event, setEmail, setEmailError,
-            )}
+            onChange={(event: ChangeEvent<HTMLInputElement>) => validateEmail(event, setEmail, setEmailError)}
             helperText={emailError}
             variant="outlined"
             margin="normal"
@@ -152,8 +178,8 @@ function SignIn({
             />
             <FormHelperText error={passwordError !== ''}>{passwordError}</FormHelperText>
           </FormControl>
-          <Grid container className={classes.rememberMe}>
-            <Grid item xs>
+          <RememberMeContainer container>
+            <Grid>
               {/* <FormControlLabel
                 control={(
                   <Checkbox
@@ -166,43 +192,40 @@ function SignIn({
                 label="Remember me"
               /> */}
             </Grid>
-          </Grid>
-          <Button
+          </RememberMeContainer>
+          <SubmitButton
             type="submit"
             fullWidth
             variant="contained"
             color="primary"
-            className={classes.submit}
           >
             Sign In
-          </Button>
-          <Grid container className={classes.forgotPassword}>
-            <Grid item xs>
-              <Link
-                component="button"
+          </SubmitButton>
+          <ForgotPasswordContainer container>
+            <Grid>
+              <StyledLink
+                // component="button"
                 variant="body2"
                 onClick={setModeToForgotPassword}
-                className={classes.formOptions}
               >
                 Forgot password?
-              </Link>
+              </StyledLink>
             </Grid>
-            <Grid item>
-              <Link
-                component="button"
+            <Grid>
+              <StyledLink
+                // component="button"
                 variant="body2"
                 onClick={(event) => {
                   event.preventDefault();
                   changeMode();
                 }}
-                className={classes.formOptions}
               >
                 Don&apos;t have an account? Sign Up
-              </Link>
+              </StyledLink>
             </Grid>
-          </Grid>
+          </ForgotPasswordContainer>
         </form>
-      </div>
+      </PaperContainer>
       <ConfirmationDialog
         title={signInTitle}
         message={signInMessage}

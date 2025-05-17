@@ -1,6 +1,10 @@
-import type { ChangeEvent } from 'react';
 import React, { useState } from 'react';
+import type {
+  ChangeEvent,
+  JSX,
+} from 'react';
 import {
+  Box,
   Button,
   Container,
   FormControl,
@@ -14,12 +18,12 @@ import {
   OutlinedInput,
   Select,
   TextField,
-} from '@material-ui/core';
+  styled,
+} from '@mui/material';
 import {
   Visibility,
   VisibilityOff,
-} from '@material-ui/icons';
-import { signUpStyles } from 'utilities/styles/styles';
+} from '@mui/icons-material';
 import {
   focusAndSetCursorToEnd,
   validateBeforeSignUp,
@@ -29,19 +33,37 @@ import {
   validatePassword,
 } from 'utilities/formValidation';
 import { FormModes } from 'utilities/abstractions';
-import {
-  signUp,
-} from 'utilities/authentication';
+import { signUp } from 'utilities/authentication';
 import ConfirmationDialog from 'pages/ConfirmationDialog';
 
 type Props = {
   changeMode: () => void,
 };
 
+const PaperContainer = styled(Box)(() => ({
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+}));
+
+const SubmitButton = styled(Button)(({ theme }) => ({
+  margin: theme.spacing(1, 0, 1),
+}));
+
+const SignInContainer = styled(Grid)(({ theme }) => ({
+  margin: theme.spacing(1, 0, 1),
+}));
+
+const StyledLink = styled(Link)(({ theme }) => ({
+  // Phone
+  [theme.breakpoints.down('xs')]: {
+    fontSize: 13,
+  },
+}));
+
 function SignUp({
   changeMode,
 }: Props): JSX.Element {
-  const classes = signUpStyles();
   const [signUpDialogOpen, setSignUpDialogOpen] = useState(false);
   const [signUpTitle, setSignUpTitle] = useState('');
   const [signUpMessage, setSignUpMessage] = useState('');
@@ -61,7 +83,7 @@ function SignUp({
 
   return (
     <Container component="main" maxWidth="xs">
-      <div className={classes.paper}>
+      <PaperContainer>
         <form
           noValidate
           onSubmit={(event) => {
@@ -155,7 +177,9 @@ function SignUp({
             error={emailError !== ''}
             onChange={(event: ChangeEvent<HTMLInputElement>) => {
               validateEmail(
-                event, setEmail, setEmailError,
+                event,
+                setEmail,
+                setEmailError,
               );
               validatePassword(
                 event,
@@ -257,32 +281,30 @@ function SignUp({
             />
             <FormHelperText error={confirmPasswordError !== ''}>{confirmPasswordError}</FormHelperText>
           </FormControl>
-          <Button
+          <SubmitButton
             type="submit"
             fullWidth
             variant="contained"
             color="primary"
-            className={classes.submit}
           >
             Sign Up
-          </Button>
-          <Grid container justifyContent="flex-end" className={classes.signIn}>
-            <Grid item>
-              <Link
-                component="button"
+          </SubmitButton>
+          <SignInContainer container justifyContent="flex-end">
+            <Grid>
+              <StyledLink
+                // component="button"
                 variant="body2"
                 onClick={(event) => {
                   event.preventDefault();
                   changeMode();
                 }}
-                className={classes.formOptions}
               >
                 Already have an account? Sign In
-              </Link>
+              </StyledLink>
             </Grid>
-          </Grid>
+          </SignInContainer>
         </form>
-      </div>
+      </PaperContainer>
       <ConfirmationDialog
         title={signUpTitle}
         message={signUpMessage}

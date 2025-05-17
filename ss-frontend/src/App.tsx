@@ -1,10 +1,14 @@
 import React, {
+  type Dispatch,
+  type SetStateAction,
   useEffect,
   useState,
+  JSX,
 } from 'react';
 import PageNotFound from 'pages/PageNotFound';
 import SelectAccountType from 'pages/SelectAccountType';
 import {
+  Box,
   Button,
   CssBaseline,
   Dialog,
@@ -13,15 +17,16 @@ import {
   DialogContentText,
   DialogTitle,
   ThemeProvider,
-} from '@material-ui/core';
+  styled,
+} from '@mui/material';
 import themeStyles from 'utilities/styles/themeStyles';
 import {
+  Outlet,
   Route,
-  Switch,
-  useHistory,
+  Routes,
+  useNavigate,
   useLocation,
 } from 'react-router-dom';
-import { appStyles } from 'utilities/styles/styles';
 import {
   getUserData,
   getUserDetails,
@@ -31,24 +36,83 @@ import resolveRoutes from 'utilities/resolveRoutes';
 import NavigationBar from 'pages/NavigationBar';
 import Store from 'pages/Store';
 import {
-  Item,
+  type UserDetails,
   UserTypes,
+  Item,
 } from 'utilities/abstractions';
 import {
   getItemsCustomer,
   getItemsSeller,
 } from 'utilities/listings';
-import Checkout from './pages/Checkout';
-import CreateListingForm from './pages/CreateListingForm';
+import Checkout from 'pages/Checkout';
+import CreateListingForm from 'pages/CreateListingForm';
+
+const RootContainer = styled(Box)(() => ({
+  display: 'flex',
+}));
+
+const ContentContainer = styled(Box)(({ theme }) => ({
+  flexGrow: 1,
+  padding: theme.spacing(1),
+  overflow: 'auto',
+}));
+
+const ToolbarSpacer = styled('div')(({ theme }) => ({
+  // Desktop
+  [theme.breakpoints.up('sm')]: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    padding: theme.spacing(0, 1),
+    ...theme.mixins.toolbar,
+  },
+  // Phone
+  [theme.breakpoints.down('sm')]: {
+    ...theme.mixins.toolbar,
+  },
+}));
+
+// const CenteredContent = styled(Box)(({ theme }) => ({
+//   margin: 'auto',
+//   padding: theme.spacing(7),
+//   width: 'fit-content',
+// }));
+
+type Props = {
+  signedIn: boolean,
+  setSignedIn: Dispatch<SetStateAction<boolean>>,
+  userType: UserTypes,
+  userDetails: UserDetails,
+};
+
+function Layout({
+  signedIn, setSignedIn, userType, userDetails,
+}: Props): JSX.Element {
+  return (
+    <RootContainer>
+      <CssBaseline />
+      <NavigationBar
+        signedIn={signedIn}
+        setSignedIn={setSignedIn}
+        userType={userType}
+        userDetails={userDetails}
+      />
+      <ContentContainer>
+        <ToolbarSpacer />
+        <Outlet />
+        {' '}
+      </ContentContainer>
+    </RootContainer>
+  );
+}
 
 function App(): JSX.Element {
-  const history = useHistory();
+  const navigate = useNavigate();
   const location = useLocation();
   const [signedIn, setSignedIn] = useState(false);
   const [sessionExpiredDialogOpen, setSessionExpiredDialogOpen] = useState(false);
   const [userType, setUserType] = useState(getUserType());
   const [userDetails, setUserDetails] = useState(getUserDetails());
-  const classes = appStyles();
 
   const [items, setItems] = useState<Item[]>([]);
 
@@ -58,18 +122,24 @@ function App(): JSX.Element {
         setSignedIn(signedInUser);
         const resolvedRoute = resolveRoutes(location.pathname, signedInUser, userType);
         if (location.pathname !== resolvedRoute) {
-          history.push(resolvedRoute);
+          navigate(resolvedRoute);
         }
       });
+
+    const handleBeforeUnload = (): void => {
+      localStorage.removeItem('isSignedIn');
+    };
+
     if (signedIn) {
-      window.onunload = () => {
-        localStorage.removeItem('isSignedIn');
-      };
+      window.addEventListener('beforeunload', handleBeforeUnload);
     }
-  }, [history, location.pathname, signedIn, userType]);
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, [navigate, location.pathname, signedIn, userType]);
 
   useEffect(() => {
-    const fetchListings = async () => {
+    const fetchListings = async (): Promise<void> => {
       if (signedIn) {
         if (userType === UserTypes.Customer) {
           setItems(await getItemsCustomer());
@@ -78,64 +148,57 @@ function App(): JSX.Element {
         }
       }
     };
+    // noinspection JSIgnoredPromiseFromCall
     fetchListings();
   }, [signedIn, userType]);
 
   return (
     <ThemeProvider theme={themeStyles()}>
       <meta name="color-scheme" content="dark" />
-      <Switch>
-        <Route exact path="/404">
-          <PageNotFound />
-        </Route>
-        <Route path="/">
-          <div className={classes.root}>
-            <CssBaseline />
-            <NavigationBar
+      <Routes>
+        <Route path="/404" element={<PageNotFound />} />
+        <Route
+          path="/"
+          element={(
+            <Layout
               signedIn={signedIn}
               setSignedIn={setSignedIn}
               userType={userType}
               userDetails={userDetails}
             />
-            <main className={classes.content}>
-              <div className={classes.toolbar} />
-              <Switch>
-                <Route exact path="/login">
-                  <SelectAccountType
-                    setSignedIn={setSignedIn}
-                    userType={userType}
-                    setUserType={setUserType}
-                    setUserDetails={setUserDetails}
-                  />
-                </Route>
-                <Route exact path="/store">
-                  <Store
-                    items={items}
-                    setItems={setItems}
-                    userType={userType}
-                  />
-                </Route>
-                <Route exact path="/checkout">
-                  <Checkout items={items} setItems={setItems} />
-                </Route>
-                <Route exact path="/listings">
-                  <Store
-                    items={items}
-                    setItems={setItems}
-                    userType={userType}
-                  />
-                </Route>
-                <Route exact path="/create-listing">
-                  <CreateListingForm
-                    items={items}
-                    setItems={setItems}
-                  />
-                </Route>
-              </Switch>
-            </main>
-          </div>
+          )}
+        >
+          <Route
+            path="login"
+            element={(
+              <SelectAccountType
+                setSignedIn={setSignedIn}
+                userType={userType}
+                setUserType={setUserType}
+                setUserDetails={setUserDetails}
+              />
+            )}
+          />
+          <Route
+            path="store"
+            element={(<Store items={items} setItems={setItems} userType={userType} />
+            )}
+          />
+          <Route
+            path="checkout"
+            element={<Checkout items={items} setItems={setItems} />}
+          />
+          <Route
+            path="listings"
+            element={(<Store items={items} setItems={setItems} userType={userType} />)}
+          />
+
+          <Route
+            path="create-listing"
+            element={<CreateListingForm setItems={setItems} />}
+          />
         </Route>
-      </Switch>
+      </Routes>
       <Dialog
         maxWidth="xs"
         open={sessionExpiredDialogOpen}

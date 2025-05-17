@@ -1,5 +1,7 @@
-import React, {
+import React from 'react';
+import type {
   Dispatch,
+  JSX,
   SetStateAction,
 } from 'react';
 import {
@@ -14,13 +16,13 @@ import {
   ListItemText,
   Button,
   Typography,
-} from '@material-ui/core';
+} from '@mui/material';
 import {
   ShoppingCart,
   Payment,
-} from '@material-ui/icons';
-import { Item } from 'utilities/abstractions';
-import { useHistory } from 'react-router-dom';
+} from '@mui/icons-material';
+import type { Item } from 'utilities/abstractions';
+import { useNavigate } from 'react-router-dom';
 
 type Props = {
   open: boolean,
@@ -35,7 +37,7 @@ function Cart(
     items,
   }: Props,
 ): JSX.Element {
-  const history = useHistory();
+  const navigate = useNavigate();
   const handleClickOpen = (): void => {
     setOpen(true);
   };
@@ -45,7 +47,7 @@ function Cart(
   };
 
   const proceedToCheckout = (): void => {
-    history.push('/checkout');
+    navigate('/checkout');
   };
 
   const totalPrice = items.reduce((acc, item) => acc + Number(item.price.slice(1)) * item.quantity, 0);

@@ -1,11 +1,12 @@
 import React from 'react';
+import type { JSX } from 'react';
 import {
-  ListItem,
+  ListItemButton,
   ListItemIcon,
   ListItemText,
   Tooltip,
   Zoom,
-} from '@material-ui/core';
+} from '@mui/material';
 
 type Props = {
   title: string,
@@ -29,15 +30,17 @@ function DrawerItem({
       arrow
       enterTouchDelay={100}
       leaveTouchDelay={shouldDisplayTooltip ? 1500 : 0}
-      TransitionComponent={Zoom}
+      slots={{
+        transition: Zoom,
+      }}
       placement="right"
     >
-      <ListItem button onClick={onClick} disabled={disabled}>
+      <ListItemButton onClick={onClick} disabled={disabled}>
         <ListItemIcon>
           {icon}
         </ListItemIcon>
         <ListItemText primary={title} />
-      </ListItem>
+      </ListItemButton>
     </Tooltip>
   );
 }

@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import type {
   Dispatch,
+  JSX,
   SetStateAction,
 } from 'react';
 import {
-  useHistory,
+  useNavigate,
   useLocation,
 } from 'react-router-dom';
 import {
@@ -12,7 +13,7 @@ import {
   Info,
   Shop,
   Store,
-} from '@material-ui/icons/';
+} from '@mui/icons-material';
 import { UserTypes } from 'utilities/abstractions';
 import DrawerItem from 'pages/DrawerItem';
 import About from 'pages/About';
@@ -32,7 +33,7 @@ function DrawerItems({
   setNavigationBarIsOpen,
 }: Props): JSX.Element {
   const shouldDisplayTooltip = navigationBarIsOpen === false;
-  const history = useHistory();
+  const navigate = useNavigate();
   const location = useLocation();
   const [aboutDialogOpen, setAboutDialogOpen] = useState(false);
 
@@ -42,10 +43,10 @@ function DrawerItems({
     setNavigationBarIsOpen(false);
     if (location.pathname !== route) {
       if (shouldDisplayTooltip) {
-        history.push(route);
+        navigate(route);
       } else {
         setTimeout(() => {
-          history.push(route);
+          navigate(route);
         }, 300);
       }
     }
@@ -123,7 +124,7 @@ function DrawerItems({
                 </>
               );
             default:
-              return <></>;
+              return null;
           }
         })()}
       </div>

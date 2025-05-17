@@ -1,27 +1,28 @@
-import React, {
+import React, { useState } from 'react';
+import type {
   ChangeEvent,
   Dispatch,
+  JSX,
   SetStateAction,
-  useState,
 } from 'react';
 import {
   FormModes,
-  UserDetails,
   UserTypes,
 } from 'utilities/abstractions';
-import { selectAccountTypeStyles } from 'utilities/styles/styles';
+import type { UserDetails } from 'utilities/abstractions';
 import {
   Divider,
   Grid,
   Paper,
+  styled,
   Tab,
   Tabs,
   Typography,
-} from '@material-ui/core';
+} from '@mui/material';
 import {
   ShoppingCart,
   Store,
-} from '@material-ui/icons';
+} from '@mui/icons-material';
 import SignIn from 'pages/SignIn';
 import SignUp from 'pages/SignUp';
 import ForgotPassword from 'pages/ForgotPassword';
@@ -33,6 +34,28 @@ type Props = {
   setUserDetails: Dispatch<SetStateAction<UserDetails>>,
 }
 
+const PaperContainer = styled(Grid)(({ theme }) => ({
+  margin: 'auto',
+  paddingTop: theme.spacing(7),
+  width: 'fit-content',
+}));
+
+const TitleText = styled(Typography)(({ theme }) => ({
+  margin: theme.spacing(1, 0, 2),
+  textAlign: 'center',
+  paddingTop: theme.spacing(1.5),
+}));
+
+const PaperGrid = styled(Grid)(({ theme }) => ({
+  margin: 'auto',
+  textAlign: 'center',
+  marginBottom: theme.spacing(1),
+}));
+
+const CopyrightTextContainer = styled(Grid)(({ theme }) => ({
+  paddingBottom: theme.spacing(2),
+}));
+
 function SelectAccountType(
   {
     setSignedIn,
@@ -41,14 +64,13 @@ function SelectAccountType(
     setUserDetails,
   }: Props,
 ): JSX.Element {
-  const classes = selectAccountTypeStyles();
   const [mode, setMode] = useState(FormModes.SignIn);
   const [tabIndex, setTabIndex] = useState(userType < 2 ? userType : 0);
   const [typeTitle, setTypeTitle] = useState(UserTypes[userType]);
   const [lastTab, setLastTab] = useState(userType);
 
   const handleChange = (
-    event: ChangeEvent<unknown> | null,
+    _event: ChangeEvent<unknown> | null,
     newValue: UserTypes,
     modeChanged = false,
   ): void => {
@@ -75,43 +97,39 @@ function SelectAccountType(
   };
 
   return (
-    <Grid container className={classes.root}>
+    <PaperContainer container>
       <Paper elevation={4}>
-        <Grid item xs={12}>
-          <Typography variant="h4" className={classes.title}>
+        <Grid size={{ xs: 12 }}>
+          <TitleText variant="h4">
             {mode === FormModes.SignUp || mode === FormModes.ForgotPassword ? '' : typeTitle}
             {mode === FormModes.SignUp || mode === FormModes.ForgotPassword ? '' : ' '}
             {mode === FormModes.ForgotPassword ? 'Forgot Password' : FormModes[mode].replace(/(In|Up)/, ' $1')}
-          </Typography>
+          </TitleText>
         </Grid>
         <Divider />
-        <Grid item xs={12} className={classes.paperGrid}>
+        <PaperGrid size={{ xs: 12 }}>
           {mode === FormModes.SignIn ? (
-            <Paper square className={classes.tabCard} elevation={0}>
-              <Tabs
-                value={tabIndex}
-                onChange={handleChange}
-                variant="fullWidth"
-                indicatorColor="primary"
-                textColor="primary"
-                centered
-                aria-label="icon label tabs"
-              >
-                <Tab
-                  icon={<ShoppingCart />}
-                  className={classes.tab}
-                  label="Customer"
-                />
-                <Tab
-                  icon={<Store />}
-                  className={classes.tab}
-                  label="Seller"
-                />
-              </Tabs>
-            </Paper>
-          ) : (<></>)}
-        </Grid>
-        <Grid item xs={12}>
+            <Tabs
+              value={tabIndex}
+              onChange={handleChange}
+              variant="fullWidth"
+              indicatorColor="primary"
+              textColor="primary"
+              centered
+              aria-label="icon label tabs"
+            >
+              <Tab
+                icon={<ShoppingCart />}
+                label="Customer"
+              />
+              <Tab
+                icon={<Store />}
+                label="Seller"
+              />
+            </Tabs>
+          ) : null}
+        </PaperGrid>
+        <Grid size={{ xs: 12 }}>
           {mode === FormModes.SignIn
             ? (
               <SignIn
@@ -123,19 +141,19 @@ function SelectAccountType(
                 setUserDetails={setUserDetails}
               />
             )
-            : <></>}
+            : null}
           {mode === FormModes.SignUp
             ? (
               <SignUp
                 changeMode={changeMode}
               />
             )
-            : <></>}
-          {mode === FormModes.ForgotPassword ? <ForgotPassword changeMode={changeMode} /> : <></>}
+            : null}
+          {mode === FormModes.ForgotPassword ? <ForgotPassword changeMode={changeMode} /> : null}
         </Grid>
-        <Grid item xs={12} className={classes.copyrightText} />
+        <CopyrightTextContainer size={{ xs: 12 }} />
       </Paper>
-    </Grid>
+    </PaperContainer>
   );
 }
 

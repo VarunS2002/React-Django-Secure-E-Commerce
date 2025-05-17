@@ -1,19 +1,21 @@
-import React, {
+import React, { useState } from 'react';
+import type {
   ChangeEvent,
   Dispatch,
+  JSX,
   SetStateAction,
-  useState,
 } from 'react';
-import { Item } from 'utilities/abstractions';
-import { useHistory } from 'react-router-dom';
+import type { Item } from 'utilities/abstractions';
+import { useNavigate } from 'react-router-dom';
 import {
+  Box,
   Button,
   Container,
+  styled,
   TextField,
   Typography,
-} from '@material-ui/core';
+} from '@mui/material';
 import ConfirmationDialog from 'pages/ConfirmationDialog';
-import { signUpStyles } from 'utilities/styles/styles';
 import {
   validateAddress,
   validateBeforeCheckout,
@@ -23,22 +25,31 @@ import {
   validatePhone,
   validateZip,
 } from 'utilities/formValidation';
-import { checkout } from '../utilities/listings';
+import { checkout } from 'utilities/listings';
 
 type Props = {
   items: Item[]
   setItems: Dispatch<SetStateAction<Item[]>>
 }
 
+const PaperContainer = styled(Box)(() => ({
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+}));
+
+const SubmitButton = styled(Button)(({ theme }) => ({
+  margin: theme.spacing(1, 0, 1),
+}));
+
 function Checkout({
   items,
   setItems,
 }: Props): JSX.Element {
-  const history = useHistory();
+  const navigate = useNavigate();
   const itemsInCart = items.filter((item) => item.quantity > 0);
   const totalPrice = items.reduce((acc, item) => acc + Number(item.price.slice(1)) * item.quantity, 0);
 
-  const classes = signUpStyles();
   const [checkoutDialogOpen, setCheckoutDialogOpen] = useState(false);
   const [checkoutTitle, setCheckoutTitle] = useState('');
   const [checkoutMessage, setCheckoutMessage] = useState('');
@@ -56,9 +67,9 @@ function Checkout({
   const [csc, setCsc] = useState(0);
   const [cscError, setCscError] = useState('');
 
-  const goToStore = () => {
+  const goToStore = (): void => {
     if (!checkoutDialogOpen) {
-      history.push('/store');
+      navigate('/store');
     }
   };
 
@@ -71,7 +82,7 @@ function Checkout({
       <br />
       <br />
       <br />
-      <div className={classes.paper}>
+      <PaperContainer>
         <Typography variant="h5">
           Total Price (inc. taxes): $
           {totalPrice}
@@ -213,26 +224,24 @@ function Checkout({
               type="text"
             />
           </div>
-          <Button
+          <SubmitButton
             type="submit"
             fullWidth
             variant="contained"
             color="primary"
-            className={classes.submit}
           >
             Confirm Purchase
-          </Button>
-          <Button
+          </SubmitButton>
+          <SubmitButton
             fullWidth
             variant="contained"
             color="secondary"
-            className={classes.submit}
             onClick={goToStore}
           >
             Cancel
-          </Button>
+          </SubmitButton>
         </form>
-      </div>
+      </PaperContainer>
       <ConfirmationDialog
         title={checkoutTitle}
         message={checkoutMessage}

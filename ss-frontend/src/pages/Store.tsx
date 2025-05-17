@@ -1,7 +1,8 @@
-import React, {
+import React, { useState } from 'react';
+import type {
   Dispatch,
+  JSX,
   SetStateAction,
-  useState,
 } from 'react';
 import {
   Grid,
@@ -11,24 +12,28 @@ import {
   Button,
   Box,
   IconButton,
-} from '@material-ui/core';
+  styled,
+} from '@mui/material';
 import Cart from 'pages/Cart';
-import {
-  Item,
-  UserTypes,
-} from 'utilities/abstractions';
-import {
-  Delete,
-} from '@material-ui/icons';
-import CreateListing from './CreateListing';
-import ConfirmationDialog from './ConfirmationDialog';
-import { deleteListing } from '../utilities/listings';
+import { UserTypes } from 'utilities/abstractions';
+import type { Item } from 'utilities/abstractions';
+import { Delete } from '@mui/icons-material';
+import CreateListing from 'pages/CreateListing';
+import ConfirmationDialog from 'pages/ConfirmationDialog';
+import { deleteListing } from 'utilities/listings';
 
 type Props = {
   items: Item[],
   setItems: Dispatch<SetStateAction<Item[]>>
   userType: UserTypes,
 }
+
+const NameTitle = styled(Typography)(() => ({
+  whiteSpace: 'nowrap',
+  overflowX: 'auto',
+  overflowY: 'hidden',
+  display: 'block', // required for scrollbars in Typography
+}));
 
 function Store(
   {
@@ -69,7 +74,12 @@ function Store(
       >
         <Grid container spacing={3}>
           {items.map((item) => (
-            <Grid item xs={12} sm={6} md={4} lg={3} key={item.id}>
+            <Grid
+              size={{
+                xs: 12, sm: 6, md: 3, lg: 3,
+              }}
+              key={item.id}
+            >
               <Card>
                 <div
                   style={{
@@ -92,15 +102,15 @@ function Store(
                   />
                 </div>
                 <CardContent>
-                  <Typography gutterBottom variant="h5" component="div">
+                  <NameTitle gutterBottom variant="h5">
                     {item.name}
-                  </Typography>
+                  </NameTitle>
                   {userType === UserTypes.Customer ? (
-                    <Typography variant="body1" color="textSecondary">
+                    <Typography variant="body1" color="textSecondary" noWrap>
                       {item.seller}
                     </Typography>
-                  ) : <></>}
-                  <Typography variant="body2" color="textSecondary">
+                  ) : null}
+                  <Typography variant="body2" color="textSecondary" noWrap>
                     {item.price}
                   </Typography>
                   {userType === UserTypes.Customer ? (
@@ -142,7 +152,7 @@ function Store(
                         +
                       </Button>
                     </Box>
-                  ) : <></>}
+                  ) : null}
                 </CardContent>
                 {
                   userType === UserTypes.Seller ? (
@@ -163,7 +173,7 @@ function Store(
                         <Delete />
                       </IconButton>
                     </CardContent>
-                  ) : <></>
+                  ) : null
                 }
                 {/* <CardActions style={{ justifyContent: 'flex-end' }}>
                   <Button
@@ -185,10 +195,10 @@ function Store(
           setOpen={setCartOpen}
           items={itemsInCart}
         />
-      ) : <></>}
+      ) : null}
       {userType === UserTypes.Seller ? (
         <CreateListing />
-      ) : <></>}
+      ) : null}
       <ConfirmationDialog
         title={dialogTitle}
         message={dialogMessage}

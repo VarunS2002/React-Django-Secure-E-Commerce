@@ -1,6 +1,10 @@
-import type { ChangeEvent } from 'react';
 import React, { useState } from 'react';
+import type {
+  ChangeEvent,
+  JSX,
+} from 'react';
 import {
+  Box,
   Button,
   Container,
   FormControl,
@@ -11,13 +15,13 @@ import {
   InputLabel,
   Link,
   OutlinedInput,
+  styled,
   TextField,
-} from '@material-ui/core';
+} from '@mui/material';
 import {
   Visibility,
   VisibilityOff,
-} from '@material-ui/icons';
-import { signUpStyles } from 'utilities/styles/styles';
+} from '@mui/icons-material';
 import {
   focusAndSetCursorToEnd,
   validateBeforeResetPassword,
@@ -37,10 +41,30 @@ type Props = {
   changeMode: () => void,
 };
 
+const PaperContainer = styled(Box)(() => ({
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+}));
+
+const SubmitButton = styled(Button)(({ theme }) => ({
+  margin: theme.spacing(1, 0, 1),
+}));
+
+const SignInContainer = styled(Grid)(({ theme }) => ({
+  margin: theme.spacing(1, 0, 1),
+}));
+
+const StyledLink = styled(Link)(({ theme }) => ({
+  // Phone
+  [theme.breakpoints.down('xs')]: {
+    fontSize: 13,
+  },
+}));
+
 function ForgotPassword({
   changeMode,
 }: Props): JSX.Element {
-  const classes = signUpStyles();
   const [email, setEmail] = useState('');
   const [emailError, setEmailError] = useState('');
 
@@ -59,241 +83,233 @@ function ForgotPassword({
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   return (
-    <>
-      <Container component="main" maxWidth="xs">
-        <div className={classes.paper}>
-          {!resetMode ? (
-            <form
-              noValidate
-              onSubmit={(event) => {
-                event.preventDefault();
-                if (emailError === '' && email !== '') {
-                  sendPasswordResetEmail(
-                    email,
-                    setForgotDialogOpen,
-                    setForgotTitle,
-                    setForgotMessage,
-                    setResetMode,
-                  );
-                } else if (email === '') {
-                  setEmailError('Email address cannot be empty.');
-                }
+    <Container component="main" maxWidth="xs">
+      <PaperContainer>
+        {!resetMode ? (
+          <form
+            noValidate
+            onSubmit={(event) => {
+              event.preventDefault();
+              if (emailError === '' && email !== '') {
+                sendPasswordResetEmail(
+                  email,
+                  setForgotDialogOpen,
+                  setForgotTitle,
+                  setForgotMessage,
+                  setResetMode,
+                );
+              } else if (email === '') {
+                setEmailError('Email address cannot be empty.');
+              }
+            }}
+          >
+            <TextField
+              error={emailError !== ''}
+              onChange={(event: ChangeEvent<HTMLInputElement>) => {
+                validateEmail(event, setEmail, setEmailError);
               }}
+              helperText={emailError}
+              variant="outlined"
+              margin="normal"
+              required
+              fullWidth
+              id="email"
+              label="Email Address"
+              name="email"
+              autoComplete="email"
+              type="email"
+            />
+            <SubmitButton
+              type="submit"
+              fullWidth
+              variant="contained"
+              color="primary"
             >
-              <TextField
-                error={emailError !== ''}
+              Get OTP
+            </SubmitButton>
+            <SignInContainer container justifyContent="flex-end">
+              <Grid>
+                <StyledLink
+                  // component="button"
+                  variant="body2"
+                  onClick={(event) => {
+                    event.preventDefault();
+                    changeMode();
+                  }}
+                >
+                  Back to Sign In
+                </StyledLink>
+              </Grid>
+            </SignInContainer>
+          </form>
+        ) : (
+          <form
+            noValidate
+            onSubmit={(event) => {
+              if (validateBeforeResetPassword(
+                event,
+                otp,
+                setOtpError,
+                password,
+                setPasswordError,
+                setShowPassword,
+                setConfirmPasswordError,
+                setShowConfirmPassword,
+              )) {
+                resetPassword(
+                  email,
+                  otp,
+                  password,
+                  setForgotDialogOpen,
+                  setForgotTitle,
+                  setForgotMessage,
+                  setResetMode,
+                  changeMode,
+                );
+              }
+            }}
+          >
+            <TextField
+              error={otpError !== ''}
+              onChange={(event: ChangeEvent<HTMLInputElement>) => validateOtp(event, setOtp, setOtpError)}
+              helperText={otpError}
+              variant="outlined"
+              margin="normal"
+              required
+              fullWidth
+              id="otp"
+              label="OTP"
+              name="otp"
+              autoComplete="one-time-code"
+              type="number"
+            />
+            <FormControl variant="outlined" margin="normal" fullWidth>
+              <InputLabel htmlFor="password" error={passwordError !== ''}>Password *</InputLabel>
+              <OutlinedInput
+                error={passwordError !== ''}
+                required
+                fullWidth
+                name="password"
+                id="password"
+                label="Password *"
+                autoComplete="new-password"
+                type={showPassword ? 'text' : 'password'}
                 onChange={(event: ChangeEvent<HTMLInputElement>) => {
-                  validateEmail(
-                    event, setEmail, setEmailError,
+                  validatePassword(
+                    event,
+                    'password',
+                    email,
+                    emailError,
+                    setPassword,
+                    passwordError,
+                    setPasswordError,
+                    FormModes.SignUp,
+                  );
+                  validateConfirmPassword(
+                    event,
+                    'password',
+                    setConfirmPasswordError,
                   );
                 }}
-                helperText={emailError}
-                variant="outlined"
-                margin="normal"
+                endAdornment={(
+                  <InputAdornment position="end">
+                    <IconButton
+                      onClick={() => {
+                        setShowPassword(!showPassword);
+                        setTimeout(() => focusAndSetCursorToEnd('password'), 0);
+                      }}
+                      onMouseDown={(event) => event.preventDefault()}
+                      edge="end"
+                    >
+                      {showPassword ? <Visibility /> : <VisibilityOff />}
+                    </IconButton>
+                  </InputAdornment>
+                  )}
+              />
+              <FormHelperText error={passwordError !== ''}>{passwordError}</FormHelperText>
+            </FormControl>
+            <FormControl variant="outlined" margin="normal" fullWidth>
+              <InputLabel htmlFor="confirmPassword" error={confirmPasswordError !== ''}>
+                Confirm Password
+                *
+              </InputLabel>
+              <OutlinedInput
+                error={confirmPasswordError !== ''}
                 required
                 fullWidth
-                id="email"
-                label="Email Address"
-                name="email"
-                autoComplete="email"
-                type="email"
-              />
-              <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                color="primary"
-                className={classes.submit}
-              >
-                Get OTP
-              </Button>
-              <Grid container justifyContent="flex-end" className={classes.signIn}>
-                <Grid item>
-                  <Link
-                    component="button"
-                    variant="body2"
-                    onClick={(event) => {
-                      event.preventDefault();
-                      changeMode();
-                    }}
-                    className={classes.formOptions}
-                  >
-                    Back to Sign In
-                  </Link>
-                </Grid>
-              </Grid>
-            </form>
-          ) : (
-            <form
-              noValidate
-              onSubmit={(event) => {
-                if (validateBeforeResetPassword(
+                name="confirmPassword"
+                id="confirmPassword"
+                label="Confirm Password *"
+                autoComplete="new-password"
+                type={showConfirmPassword ? 'text' : 'password'}
+                onChange={(event: ChangeEvent<HTMLInputElement>) => validateConfirmPassword(
                   event,
-                  otp,
-                  setOtpError,
-                  password,
-                  setPasswordError,
-                  setShowPassword,
+                  'confirmPassword',
                   setConfirmPasswordError,
-                  setShowConfirmPassword,
-                )) {
-                  resetPassword(
-                    email,
-                    otp,
-                    password,
-                    setForgotDialogOpen,
-                    setForgotTitle,
-                    setForgotMessage,
-                    setResetMode,
-                    changeMode,
-                  );
-                }
-              }}
-            >
-              <TextField
-                error={otpError !== ''}
-                onChange={(event: ChangeEvent<HTMLInputElement>) => validateOtp(event, setOtp, setOtpError)}
-                helperText={otpError}
-                variant="outlined"
-                margin="normal"
-                required
-                fullWidth
-                id="otp"
-                label="OTP"
-                name="otp"
-                autoComplete="one-time-code"
-                type="number"
+                )}
+                endAdornment={(
+                  <InputAdornment position="end">
+                    <IconButton
+                      onClick={() => {
+                        setShowConfirmPassword(!showConfirmPassword);
+                        setTimeout(() => focusAndSetCursorToEnd('confirmPassword'), 0);
+                      }}
+                      onMouseDown={(event) => event.preventDefault()}
+                      edge="end"
+                    >
+                      {showConfirmPassword ? <Visibility /> : <VisibilityOff />}
+                    </IconButton>
+                  </InputAdornment>
+                  )}
               />
-              <FormControl variant="outlined" margin="normal" fullWidth>
-                <InputLabel htmlFor="password" error={passwordError !== ''}>Password *</InputLabel>
-                <OutlinedInput
-                  error={passwordError !== ''}
-                  required
-                  fullWidth
-                  name="password"
-                  id="password"
-                  label="Password *"
-                  autoComplete="new-password"
-                  type={showPassword ? 'text' : 'password'}
-                  onChange={(event: ChangeEvent<HTMLInputElement>) => {
-                    validatePassword(
-                      event,
-                      'password',
-                      email,
-                      emailError,
-                      setPassword,
-                      passwordError,
-                      setPasswordError,
-                      FormModes.SignUp,
-                    );
-                    validateConfirmPassword(
-                      event,
-                      'password',
-                      setConfirmPasswordError,
-                    );
+              <FormHelperText error={confirmPasswordError !== ''}>{confirmPasswordError}</FormHelperText>
+            </FormControl>
+            <SubmitButton
+              type="submit"
+              fullWidth
+              variant="contained"
+              color="primary"
+            >
+              Reset Password
+            </SubmitButton>
+            <SignInContainer container justifyContent="flex-end">
+              <Grid>
+                <StyledLink
+                  // component="button"
+                  variant="body2"
+                  onClick={(event) => {
+                    event.preventDefault();
+                    setResetMode(false);
+                    changeMode();
                   }}
-                  endAdornment={(
-                    <InputAdornment position="end">
-                      <IconButton
-                        onClick={() => {
-                          setShowPassword(!showPassword);
-                          setTimeout(() => focusAndSetCursorToEnd('password'), 0);
-                        }}
-                        onMouseDown={(event) => event.preventDefault()}
-                        edge="end"
-                      >
-                        {showPassword ? <Visibility /> : <VisibilityOff />}
-                      </IconButton>
-                    </InputAdornment>
-                  )}
-                />
-                <FormHelperText error={passwordError !== ''}>{passwordError}</FormHelperText>
-              </FormControl>
-              <FormControl variant="outlined" margin="normal" fullWidth>
-                <InputLabel htmlFor="confirmPassword" error={confirmPasswordError !== ''}>
-                  Confirm Password
-                  *
-                </InputLabel>
-                <OutlinedInput
-                  error={confirmPasswordError !== ''}
-                  required
-                  fullWidth
-                  name="confirmPassword"
-                  id="confirmPassword"
-                  label="Confirm Password *"
-                  autoComplete="new-password"
-                  type={showConfirmPassword ? 'text' : 'password'}
-                  onChange={(event: ChangeEvent<HTMLInputElement>) => validateConfirmPassword(
-                    event,
-                    'confirmPassword',
-                    setConfirmPasswordError,
-                  )}
-                  endAdornment={(
-                    <InputAdornment position="end">
-                      <IconButton
-                        onClick={() => {
-                          setShowConfirmPassword(!showConfirmPassword);
-                          setTimeout(() => focusAndSetCursorToEnd('confirmPassword'), 0);
-                        }}
-                        onMouseDown={(event) => event.preventDefault()}
-                        edge="end"
-                      >
-                        {showConfirmPassword ? <Visibility /> : <VisibilityOff />}
-                      </IconButton>
-                    </InputAdornment>
-                  )}
-                />
-                <FormHelperText error={confirmPasswordError !== ''}>{confirmPasswordError}</FormHelperText>
-              </FormControl>
-              <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                color="primary"
-                className={classes.submit}
-              >
-                Reset Password
-              </Button>
-              <Grid container justifyContent="flex-end" className={classes.signIn}>
-                <Grid item>
-                  <Link
-                    component="button"
-                    variant="body2"
-                    onClick={(event) => {
-                      event.preventDefault();
-                      setResetMode(false);
-                      changeMode();
-                    }}
-                    className={classes.formOptions}
-                  >
-                    Back to Sign In
-                  </Link>
-                </Grid>
+                >
+                  Back to Sign In
+                </StyledLink>
               </Grid>
-            </form>
-          )}
-        </div>
-        <ConfirmationDialog
-          title={forgotTitle}
-          message={forgotMessage}
-          oneAction
-          open={forgotDialogOpen}
-          setOpen={setForgotDialogOpen}
-          onConfirm={() => {
-            if (forgotTitle === 'Password Reset Successful') {
-              setResetMode(false);
-              changeMode();
-            }
-          }}
-          onClose={() => {
-            if (forgotTitle === 'Password Reset Successful') {
-              setResetMode(false);
-              changeMode();
-            }
-          }}
-        />
-      </Container>
-    </>
+            </SignInContainer>
+          </form>
+        )}
+      </PaperContainer>
+      <ConfirmationDialog
+        title={forgotTitle}
+        message={forgotMessage}
+        oneAction
+        open={forgotDialogOpen}
+        setOpen={setForgotDialogOpen}
+        onConfirm={() => {
+          if (forgotTitle === 'Password Reset Successful') {
+            setResetMode(false);
+            changeMode();
+          }
+        }}
+        onClose={() => {
+          if (forgotTitle === 'Password Reset Successful') {
+            setResetMode(false);
+            changeMode();
+          }
+        }}
+      />
+    </Container>
   );
 }
 

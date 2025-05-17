@@ -1,6 +1,7 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "Secure E-Commerce",
+  "name": "Secure E-Commerce",
+  "description": "Secure E-Commerce website created using React and Django",
   "icons": [
     {
       "src": "favicon.ico",
@@ -20,6 +21,6 @@
   ],
   "start_url": ".",
   "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff"
+  "theme_color": "#3880FF",
+  "background_color": "#121212"
 }

@@ -1,2 +1,4 @@
 /.idea
 *.iml
+/*.txt
+/ss_backend/db.sqlite3

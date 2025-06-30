@@ -85,7 +85,7 @@ class Account(AbstractBaseUser):
                                                   verbose_name='Contact number')
     address = models.TextField(blank=True, null=True, default=None, verbose_name='Address')
 
-    date_joined = models.DateTimeField(verbose_name='Date joined', auto_now=True)
+    date_joined = models.DateTimeField(verbose_name='Date joined', auto_now_add=True)
     last_login = models.DateTimeField(verbose_name='Last login', auto_now=True)
 
     is_admin = models.BooleanField(default=False)

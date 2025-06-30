@@ -49,6 +49,8 @@ function Store(
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogTitle, setDialogTitle] = useState('');
   const [dialogMessage, setDialogMessage] = useState('');
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState<number>(0);
 
   const handleQuantityChange = (id: number, delta: number): void => {
     const newItems = items.map((item) => {
@@ -162,12 +164,28 @@ function Store(
                         justifyContent: 'flex-end',
                       }}
                     >
+                      <ConfirmationDialog
+                        title="Confirm Deletion"
+                        message="Are you sure you want to delete this listing? This action cannot be undone."
+                        oneAction={false}
+                        open={deleteDialogOpen}
+                        setOpen={setDeleteDialogOpen}
+                        onConfirm={() => deleteListing(
+                          itemToDelete,
+                          items,
+                          setItems,
+                          setDialogOpen,
+                          setDialogTitle,
+                          setDialogMessage,
+                        )}
+                      />
                       <IconButton
                         color="secondary"
                         size="small"
                         key={item.id}
                         onClick={() => {
-                          deleteListing(item.id, items, setItems, setDialogOpen, setDialogTitle, setDialogMessage);
+                          setItemToDelete(item.id);
+                          setDeleteDialogOpen(true);
                         }}
                       >
                         <Delete />

@@ -21,7 +21,7 @@ const signIn = (
   setSignInMessage: Dispatch<SetStateAction<string>>,
 ): void => {
   try {
-    fetch(`${API_URL}/token-auth/`, {
+    fetch(`${API_URL}/token/`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -33,46 +33,73 @@ const signIn = (
     })
       .then((response) => {
         if (!response.ok) {
-          // If the response is not OK, throw an error to catch it later
           throw new Error('Failed to sign in. Please try again.');
         }
         return response.json();
       })
-      .then((json) => {
-        if (json.user) {
-          if (Number(json.user.user_type) === userType) {
-            localStorage.setItem('token', json.token);
-            localStorage.setItem('isSignedIn', String(true));
-            setSignedIn(true);
-            setUserType(userType);
-            setUserDetails((prevState: UserDetails) => ({
-              ...prevState,
-              userType: json.user.user_type,
-              email: json.user.email,
-              firstName: json.user.first_name,
-              lastName: json.user.last_name,
-              contactNumber: json.user.contact_number,
-              address: json.user.address,
-            }));
-            localStorage.setItem('rememberMe', String(rememberMe));
-          } else {
-            const attemptedType = UserTypes[userType].toLowerCase();
-            setEmailError(`This is not a valid ${attemptedType} account`);
-            setPasswordError('');
-          }
+      .then((json: {
+        access: string;
+        refresh: string;
+      }) => {
+        if (json.access && json.refresh) {
+          localStorage.setItem('access', json.access);
+          localStorage.setItem('refresh', json.refresh);
+          fetch(`${API_URL}/core/current_user/`, {
+            headers: {
+              Authorization: `Bearer ${json.access}`,
+            },
+          })
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error('Failed to fetch user details.');
+              }
+              return response.json();
+            })
+            .then((user) => {
+              if (Number(user.user_type) === userType) {
+                localStorage.setItem('isSignedIn', String(true));
+                setSignedIn(true);
+                setUserType(userType);
+                setUserDetails((prevState: UserDetails) => ({
+                  ...prevState,
+                  userType: user.user_type,
+                  email: user.email,
+                  firstName: user.first_name,
+                  lastName: user.last_name,
+                  contactNumber: user.contact_number,
+                  address: user.address,
+                }));
+                localStorage.setItem('rememberMe', String(rememberMe));
+              } else {
+                localStorage.removeItem('access');
+                localStorage.removeItem('refresh');
+                const attemptedType = UserTypes[userType].toLowerCase();
+                setEmailError(`This is not a valid ${attemptedType} account`);
+                setPasswordError('');
+              }
+            })
+            .catch(() => {
+              localStorage.removeItem('access');
+              localStorage.removeItem('refresh');
+              setSignInDialogOpen(true);
+              setSignInTitle('Sign In Failed');
+              setSignInMessage('Could not retrieve user data.');
+            });
         } else {
           setEmailError('Incorrect email address or password');
           setPasswordError('Incorrect email address or password');
         }
       })
-      .catch((error) => {
-        // Handle any errors that occurred during the fetch operation
+      .catch(() => {
+        localStorage.removeItem('access');
+        localStorage.removeItem('refresh');
         setSignInDialogOpen(true);
         setSignInTitle('Sign In Failed');
         setSignInMessage('Please try again.');
       });
   } catch (error) {
-    // Handle any errors that occurred during the fetch operation
+    localStorage.removeItem('access');
+    localStorage.removeItem('refresh');
     setSignInDialogOpen(true);
     setSignInTitle('Sign In Failed');
     setSignInMessage('Please try again.');
@@ -82,7 +109,8 @@ const signIn = (
 const signOut = (
   setSignedIn: Dispatch<SetStateAction<boolean>> | null = null,
 ): void => {
-  localStorage.removeItem('token');
+  localStorage.removeItem('access');
+  localStorage.removeItem('refresh');
   localStorage.removeItem('isSignedIn');
   if (setSignedIn !== null) {
     setSignedIn(false);
@@ -240,7 +268,7 @@ const sendFeedback = (
     fetch(`${API_URL}/core/feedback/`, {
       method: 'POST',
       headers: {
-        Authorization: `JWT ${localStorage.getItem('token')}`,
+        Authorization: `Bearer ${localStorage.getItem('access')}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({

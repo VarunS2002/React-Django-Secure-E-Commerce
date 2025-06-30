@@ -10,7 +10,7 @@ const getItemsCustomer = async (): Promise<Item[]> => {
   await fetch(`${API_URL}/core/get_all_listings/`, {
     method: 'GET',
     headers: {
-      Authorization: `JWT ${localStorage.getItem('token')}`,
+      Authorization: `Bearer ${localStorage.getItem('access')}`,
       'Content-Type': 'application/json',
     },
   })
@@ -49,7 +49,7 @@ const checkout = (
   fetch(`${API_URL}/core/place_order/`, {
     method: 'POST',
     headers: {
-      Authorization: `JWT ${localStorage.getItem('token')}`,
+      Authorization: `Bearer ${localStorage.getItem('access')}`,
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
@@ -88,7 +88,7 @@ const getItemsSeller = async (): Promise<Item[]> => {
   await fetch(`${API_URL}/core/get_my_listings/`, {
     method: 'GET',
     headers: {
-      Authorization: `JWT ${localStorage.getItem('token')}`,
+      Authorization: `Bearer ${localStorage.getItem('access')}`,
       'Content-Type': 'application/json',
     },
   })
@@ -121,7 +121,7 @@ const deleteListing = (
   fetch(`${API_URL}/core/delete_listing/`, {
     method: 'POST',
     headers: {
-      Authorization: `JWT ${localStorage.getItem('token')}`,
+      Authorization: `Bearer ${localStorage.getItem('access')}`,
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
@@ -162,7 +162,7 @@ const createListing = (
   fetch(`${API_URL}/core/create_listing/`, {
     method: 'POST',
     headers: {
-      Authorization: `JWT ${localStorage.getItem('token')}`,
+      Authorization: `Bearer ${localStorage.getItem('access')}`,
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({

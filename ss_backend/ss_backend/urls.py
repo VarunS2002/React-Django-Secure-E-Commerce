@@ -1,7 +1,7 @@
 """ss_backend URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/3.2/topics/http/urls/
+    https://docs.djangoproject.com/en/5.2/topics/http/urls/
 Examples:
 Function views
     1. Add an import:  from my_app import views
@@ -16,11 +16,12 @@ Including another URLconf
 from django.contrib.admin import site
 from django.http import HttpResponseRedirect
 from django.urls import include, path
-from rest_framework_jwt.views import obtain_jwt_token
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 urlpatterns = [
     path('', lambda r: HttpResponseRedirect('admin/'), name='admin_redirect'),
     path('admin/', site.urls),
-    path('token-auth/', obtain_jwt_token),
+    path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('core/', include('core.urls')),
 ]

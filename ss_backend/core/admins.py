@@ -2,7 +2,7 @@ from django.contrib.admin import ModelAdmin
 
 from core.forms import AccountChangeForm, AccountCreationForm
 from django.contrib.auth.admin import UserAdmin
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 
 class AccountAdmin(UserAdmin):

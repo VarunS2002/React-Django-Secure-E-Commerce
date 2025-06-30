@@ -1,7 +1,7 @@
 import secrets
 
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 
@@ -12,6 +12,7 @@ from core.serializers import *
 # Create your views here.
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def current_user(request: Request) -> Response:
     """
     Determine the current user by their token, and return their data.
@@ -101,6 +102,7 @@ def reset_password(request: Request) -> Response:
 
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def feedback(request: Request) -> Response:
     """
     Send feedback to the admin without serializing the data.
@@ -111,6 +113,7 @@ def feedback(request: Request) -> Response:
 
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def get_all_listings(request: Request) -> Response:
     """
     Get all the listings.
@@ -134,6 +137,7 @@ def get_all_listings(request: Request) -> Response:
 
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def place_order(request: Request) -> Response:
     """
     Place an order.
@@ -156,6 +160,7 @@ def place_order(request: Request) -> Response:
 
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def get_my_listings(request: Request) -> Response:
     """
     Get the listings of the current user.
@@ -178,6 +183,7 @@ def get_my_listings(request: Request) -> Response:
 
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def delete_listing(request: Request) -> Response:
     """
     Delete a listing.
@@ -192,6 +198,7 @@ def delete_listing(request: Request) -> Response:
 
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def create_listing(request: Request) -> Response:
     """
     Create a listing.

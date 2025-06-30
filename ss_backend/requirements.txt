@@ -1,6 +1,6 @@
-Django==3.2.7
-phonenumbers==8.12.31
-django-phonenumber-field==5.2.0
-djangorestframework==3.12.4
-djangorestframework-jwt==1.11.0
-django-cors-headers==3.8.0
+Django==5.2.1
+phonenumbers==9.0.5
+django-phonenumber-field==8.1.0
+djangorestframework==3.16.0
+djangorestframework-simplejwt==5.5.0
+django-cors-headers==4.7.0

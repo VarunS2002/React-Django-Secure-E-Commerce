@@ -35,13 +35,13 @@ const getUserData = async (
   setUserDetails: Dispatch<SetStateAction<UserDetails>>,
   setSessionExpiredDialogOpen: Dispatch<SetStateAction<boolean>>,
 ): Promise<boolean> => {
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem('access');
   let tokenExpired = false;
   if (token !== null) {
     if (getIsSignedIn() || getRememberMe()) {
       await fetch(`${API_URL}/core/current_user/`, {
         headers: {
-          Authorization: `JWT ${token}`,
+          Authorization: `Bearer ${token}`,
         },
       })
         .then((response) => {
@@ -67,7 +67,7 @@ const getUserData = async (
         })
         .catch(() => {
           tokenExpired = true;
-          localStorage.removeItem('token');
+          localStorage.removeItem('access');
           signOut();
           setSessionExpiredDialogOpen(true);
         });
@@ -77,7 +77,7 @@ const getUserData = async (
       localStorage.setItem('isSignedIn', String(true));
       return true;
     }
-    localStorage.removeItem('token');
+    localStorage.removeItem('access');
   }
   return false;
 };

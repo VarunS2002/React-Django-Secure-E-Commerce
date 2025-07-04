@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'phonenumber_field',  # Phone number attribute for users
     'rest_framework',  # Django REST Framework
     'corsheaders',  # CORS headers packages
+    'rest_framework_simplejwt.token_blacklist', # Support blacklisting refresh tokens
 ]
 
 # Custom user model used for authentication 'app_label.model_name'

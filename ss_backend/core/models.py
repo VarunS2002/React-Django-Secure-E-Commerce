@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.db import models
@@ -135,7 +137,7 @@ class OTP(models.Model):
         """
         Check if the OTP is valid (10 mins expiry).
         """
-        return not self.used and (timezone.now() - self.created_at) <= timezone.timedelta(minutes=10)
+        return not self.used and (timezone.now() - self.created_at) <= timedelta(minutes=10)
 
 
 class Feedback(models.Model):

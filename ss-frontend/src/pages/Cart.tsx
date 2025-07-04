@@ -22,7 +22,7 @@ import {
   Payment,
 } from '@mui/icons-material';
 import type { Item } from 'utilities/abstractions';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 
 type Props = {
   open: boolean,

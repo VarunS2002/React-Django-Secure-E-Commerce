@@ -15,7 +15,7 @@ import {
   validatePrice,
   validateProductName,
 } from 'utilities/formValidation';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import { createListing } from 'utilities/listings';
 import ConfirmationDialog from 'pages/ConfirmationDialog';
 import type { Item } from 'utilities/abstractions';

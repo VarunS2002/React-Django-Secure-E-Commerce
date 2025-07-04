@@ -26,7 +26,7 @@ import {
   Routes,
   useNavigate,
   useLocation,
-} from 'react-router-dom';
+} from 'react-router';
 import {
   getUserData,
   getUserDetails,

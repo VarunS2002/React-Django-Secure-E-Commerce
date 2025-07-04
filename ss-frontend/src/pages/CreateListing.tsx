@@ -2,7 +2,7 @@ import React from 'react';
 import type { JSX } from 'react';
 import { Fab } from '@mui/material';
 import { Add } from '@mui/icons-material';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 
 function CreateListing(): JSX.Element {
   const navigate = useNavigate();

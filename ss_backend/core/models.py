@@ -154,7 +154,7 @@ class Item(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     name = models.CharField(max_length=50, unique=True)
     price = models.DecimalField(max_digits=10, decimal_places=2)
-    image_url = models.URLField()
+    image_url = models.URLField(max_length=2000)
     seller = models.ForeignKey(Account, on_delete=models.CASCADE, limit_choices_to={'user_type': 1})
 
     def __str__(self):

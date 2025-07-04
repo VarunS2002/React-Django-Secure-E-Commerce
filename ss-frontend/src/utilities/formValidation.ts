@@ -706,18 +706,31 @@ const validateImgUrl = (
   setImageUrl: React.Dispatch<React.SetStateAction<string>>,
   setImageUrlError: React.Dispatch<React.SetStateAction<string>>,
 ): void => {
-  const isUpTo200Characters = event.target.value.length <= 200;
-  const isUrl = !!event.target.value.match(/^https?:\/\/[^\s/$.?#].\S*$/);
-  if (isUpTo200Characters && isUrl) {
+  const isValidImageUrl = (url: string): boolean => {
+    try {
+      const parsed = new URL(url);
+      const allowedSchemes = ['http:', 'https:'];
+      const imageExtensions = /\.(avif|apng|bmp|gif|ico|jpeg|jpg|png|svg|tiff?|webp|heic)$/i;
+
+      return (
+        url.length <= 2000
+        && allowedSchemes.includes(parsed.protocol)
+        && imageExtensions.test(parsed.pathname)
+      );
+    } catch {
+      return false;
+    }
+  };
+
+  const sanitizedValue = cleanData(event.target.value);
+
+  if (isValidImageUrl(sanitizedValue)) {
     setImageUrlError('');
-    setImageUrl(cleanData(event.target.value));
+    setImageUrl(sanitizedValue);
     // eslint-disable-next-line no-param-reassign
-    event.target.value = cleanData(event.target.value);
+    event.target.value = sanitizedValue;
   } else if (event.target.value === '') {
     setImageUrlError('');
-    setImageUrl('');
-  } else if (!isUpTo200Characters) {
-    setImageUrlError('Image URL must be less than 200 characters');
     setImageUrl('');
   } else {
     setImageUrlError('Invalid image URL');

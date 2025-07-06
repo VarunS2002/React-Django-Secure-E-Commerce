@@ -2,7 +2,10 @@ import type {
   Dispatch,
   SetStateAction,
 } from 'react';
-import { UserTypes } from '@/utilities/abstractions';
+import {
+  UserTypes,
+  UserTypeNames,
+} from '@/utilities/abstractions';
 import type { UserDetails } from '@/utilities/abstractions';
 import { API_URL } from '@/utilities/api';
 
@@ -73,7 +76,7 @@ const signIn = (
               } else {
                 localStorage.removeItem('access');
                 localStorage.removeItem('refresh');
-                const attemptedType = UserTypes[userType].toLowerCase();
+                const attemptedType = UserTypeNames[userType].toLowerCase();
                 setEmailError(`This is not a valid ${attemptedType} account`);
                 setPasswordError('');
               }

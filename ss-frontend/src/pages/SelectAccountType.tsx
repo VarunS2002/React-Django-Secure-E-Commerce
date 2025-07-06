@@ -8,6 +8,8 @@ import type {
 import {
   FormModes,
   UserTypes,
+  UserTypeNames,
+  FormModeNames,
 } from '@/utilities/abstractions';
 import type { UserDetails } from '@/utilities/abstractions';
 import {
@@ -64,9 +66,9 @@ function SelectAccountType(
     setUserDetails,
   }: Props,
 ): JSX.Element {
-  const [mode, setMode] = useState(FormModes.SignIn);
+  const [mode, setMode] = useState<FormModes>(FormModes.SignIn);
   const [tabIndex, setTabIndex] = useState(userType < 2 ? userType : 0);
-  const [typeTitle, setTypeTitle] = useState(UserTypes[userType]);
+  const [typeTitle, setTypeTitle] = useState(UserTypeNames[userType]);
   const [lastTab, setLastTab] = useState(userType);
 
   const handleChange = (
@@ -74,12 +76,12 @@ function SelectAccountType(
     newValue: UserTypes,
     modeChanged = false,
   ): void => {
-    localStorage.setItem('userType', UserTypes[newValue]);
+    localStorage.setItem('userType', UserTypeNames[newValue]);
     setTabIndex(newValue);
     if (!modeChanged) {
       setLastTab(newValue);
     }
-    setTypeTitle(UserTypes[newValue]);
+    setTypeTitle(UserTypeNames[newValue]);
   };
 
   const changeMode = (): void => {
@@ -103,7 +105,7 @@ function SelectAccountType(
           <TitleText variant="h4">
             {mode === FormModes.SignUp || mode === FormModes.ForgotPassword ? '' : typeTitle}
             {mode === FormModes.SignUp || mode === FormModes.ForgotPassword ? '' : ' '}
-            {mode === FormModes.ForgotPassword ? 'Forgot Password' : FormModes[mode].replace(/(In|Up)/, ' $1')}
+            {mode === FormModes.ForgotPassword ? 'Forgot Password' : FormModeNames[mode].replace(/(In|Up)/, ' $1')}
           </TitleText>
         </Grid>
         <Divider />

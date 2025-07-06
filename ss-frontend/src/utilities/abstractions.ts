@@ -1,14 +1,28 @@
-export enum UserTypes {
-  Customer = 0,
-  Seller = 1,
-  // Admin = 2,
-}
+export const UserTypes = {
+  Customer: 0,
+  Seller: 1,
+  // Admin: 2,
+} as const;
 
-export enum FormModes {
-  SignIn = 0,
-  SignUp = 1,
-  ForgotPassword = 2,
-}
+export type UserTypes = typeof UserTypes[keyof typeof UserTypes];
+
+export const UserTypeNames = Object.entries(UserTypes).reduce((acc, [key, value]) => {
+  acc[value] = key;
+  return acc;
+}, {} as Record<UserTypes, string>);
+
+export const FormModes = {
+  SignIn: 0,
+  SignUp: 1,
+  ForgotPassword: 2,
+} as const;
+
+export type FormModes = typeof FormModes[keyof typeof FormModes];
+
+export const FormModeNames = Object.entries(FormModes).reduce((acc, [key, value]) => {
+  acc[value] = key;
+  return acc;
+}, {} as Record<FormModes, string>);
 
 export type UserDetails = {
   userType: UserTypes,

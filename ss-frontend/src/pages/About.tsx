@@ -1,4 +1,3 @@
-import React from 'react';
 import type {
   Dispatch,
   JSX,
@@ -71,7 +70,7 @@ function About({ open, setOpen }: Props): JSX.Element {
             <LogoAvatar
               variant="rounded"
               alt="Logo"
-              src={`${process.env.PUBLIC_URL}/logo512.png`}
+              src={`/logo512.png`}
             />
             <br />
           </Grid>

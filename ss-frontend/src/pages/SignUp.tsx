@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import type {
   ChangeEvent,
   JSX,
@@ -31,10 +31,10 @@ import {
   validateEmail,
   validateName,
   validatePassword,
-} from 'utilities/formValidation';
-import { FormModes } from 'utilities/abstractions';
-import { signUp } from 'utilities/authentication';
-import ConfirmationDialog from 'pages/ConfirmationDialog';
+} from '@/utilities/formValidation';
+import { FormModes } from '@/utilities/abstractions';
+import { signUp } from '@/utilities/authentication';
+import ConfirmationDialog from '@/pages/ConfirmationDialog';
 
 type Props = {
   changeMode: () => void,

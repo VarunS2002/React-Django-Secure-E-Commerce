@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import type {
   ChangeEvent,
   Dispatch,
   JSX,
   SetStateAction,
 } from 'react';
-import type { Item } from 'utilities/abstractions';
+import type { Item } from '@/utilities/abstractions';
 import { useNavigate } from 'react-router';
 import {
   Box,
@@ -15,7 +15,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import ConfirmationDialog from 'pages/ConfirmationDialog';
+import ConfirmationDialog from '@/pages/ConfirmationDialog';
 import {
   validateAddress,
   validateBeforeCheckout,
@@ -24,8 +24,8 @@ import {
   validateExp,
   validatePhone,
   validateZip,
-} from 'utilities/formValidation';
-import { checkout } from 'utilities/listings';
+} from '@/utilities/formValidation';
+import { checkout } from '@/utilities/listings';
 
 type Props = {
   items: Item[]

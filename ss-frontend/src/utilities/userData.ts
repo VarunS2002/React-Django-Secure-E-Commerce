@@ -2,10 +2,10 @@ import type {
   Dispatch,
   SetStateAction,
 } from 'react';
-import { UserTypes } from 'utilities/abstractions';
-import type { UserDetails } from 'utilities/abstractions';
-import { signOut } from 'utilities/authentication';
-import { API_URL } from 'utilities/api';
+import { UserTypes } from '@/utilities/abstractions';
+import type { UserDetails } from '@/utilities/abstractions';
+import { signOut } from '@/utilities/authentication';
+import { API_URL } from '@/utilities/api';
 
 const getUserType = (): UserTypes => {
   const userType = localStorage.getItem('userType');

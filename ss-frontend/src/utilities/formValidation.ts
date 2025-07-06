@@ -1,11 +1,10 @@
-import React from 'react';
 import type {
   ChangeEvent,
   Dispatch,
   FormEvent,
   SetStateAction,
 } from 'react';
-import { FormModes } from 'utilities/abstractions';
+import { FormModes } from '@/utilities/abstractions';
 import DOMPurify from 'dompurify';
 
 const focusAndSetCursorToEnd = (id: string, onlyFocus = false): void => {
@@ -38,7 +37,7 @@ const validateName = (
   if (is2To40Characters) {
     setNameError('');
     setName(cleanData(event.target.value));
-    // eslint-disable-next-line no-param-reassign
+
     event.target.value = cleanData(event.target.value);
   } else if (event.target.value === '') {
     setNameError('');
@@ -60,7 +59,7 @@ const validateEmail = (
   if (isValidEmail) {
     setEmailError('');
     setEmail(cleanData(event.target.value));
-    // eslint-disable-next-line no-param-reassign
+
     event.target.value = cleanData(event.target.value);
   } else if (event.target.value === '') {
     setEmailError('');
@@ -68,12 +67,12 @@ const validateEmail = (
   } else if (!isUpTo70Characters) {
     setEmailError('Email address cannot be more than 70 characters long');
     setEmail(cleanData(event.target.value));
-    // eslint-disable-next-line no-param-reassign
+
     event.target.value = cleanData(event.target.value);
   } else {
     setEmailError('Invalid email address');
     setEmail(cleanData(event.target.value));
-    // eslint-disable-next-line no-param-reassign
+
     event.target.value = cleanData(event.target.value);
   }
 };
@@ -94,7 +93,7 @@ const validatePassword = (
       setPasswordError('');
     } else {
       setPassword(cleanData(event.target.value));
-      // eslint-disable-next-line no-param-reassign
+
       event.target.value = cleanData(event.target.value);
       setPasswordError('');
     }
@@ -118,7 +117,7 @@ const validatePassword = (
         setPasswordError('');
       } else if (isValidPassword) {
         setPassword(cleanData(event.target.value));
-        // eslint-disable-next-line no-param-reassign
+
         event.target.value = cleanData(event.target.value);
         setPasswordError('');
       } else {
@@ -403,7 +402,7 @@ const validateFeedback = (
   if (event.target.value.length <= 1000 && event.target.value.trim().length >= 5) {
     setFeedbackError('');
     setFeedback(cleanData(event.target.value));
-    // eslint-disable-next-line no-param-reassign
+
     event.target.value = cleanData(event.target.value);
   } else if (event.target.value === '') {
     setFeedbackError('');
@@ -414,7 +413,7 @@ const validateFeedback = (
   } else {
     setFeedbackError('Feedback cannot be more than 1000 characters long');
     setFeedback(cleanData(event.target.value));
-    // eslint-disable-next-line no-param-reassign
+
     event.target.value = cleanData(event.target.value);
   }
 };
@@ -428,7 +427,7 @@ const validateAddress = (
   if (isUpTo100Characters) {
     setAddressError('');
     setAddress(cleanData(event.target.value));
-    // eslint-disable-next-line no-param-reassign
+
     event.target.value = cleanData(event.target.value);
   } else if (event.target.value === '') {
     setAddressError('');
@@ -448,7 +447,7 @@ const validateZip = (
   if (isZip) {
     setZipError('');
     setZip(cleanData(event.target.value));
-    // eslint-disable-next-line no-param-reassign
+
     event.target.value = cleanData(event.target.value);
   } else if (event.target.value === '') {
     setZipError('');
@@ -540,7 +539,7 @@ const validateExp = (
     if (Number(year) > Number(currentYear) || (Number(year) === Number(currentYear) && Number(month) >= currentMonth)) {
       setExpError('');
       setExp(cleanData(event.target.value));
-      // eslint-disable-next-line no-param-reassign
+
       event.target.value = cleanData(event.target.value);
     } else {
       setExpError('Card has expired');
@@ -658,15 +657,15 @@ const validateBeforeCheckout = (
 };
 
 const validateProductName = (
-  event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
-  setProductName: React.Dispatch<React.SetStateAction<string>>,
-  setProductNameError: React.Dispatch<React.SetStateAction<string>>,
+  event: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
+  setProductName: Dispatch<SetStateAction<string>>,
+  setProductNameError: Dispatch<SetStateAction<string>>,
 ): void => {
   const is2To50Characters = event.target.value.length >= 2 && event.target.value.length <= 50;
   if (is2To50Characters) {
     setProductNameError('');
     setProductName(cleanData(event.target.value));
-    // eslint-disable-next-line no-param-reassign
+
     event.target.value = cleanData(event.target.value);
   } else if (event.target.value === '') {
     setProductNameError('');
@@ -678,9 +677,9 @@ const validateProductName = (
 };
 
 const validatePrice = (
-  event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
-  setPrice: React.Dispatch<React.SetStateAction<number>>,
-  setPriceError: React.Dispatch<React.SetStateAction<string>>,
+  event: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
+  setPrice: Dispatch<SetStateAction<number>>,
+  setPriceError: Dispatch<SetStateAction<string>>,
 ): void => {
   const isPrice = !!event.target.value.match(/^\d+(\.\d{1,2})?$/);
   if (isPrice && Number(event.target.value) <= 1_000_000 && Number(event.target.value) > 0) {
@@ -702,9 +701,9 @@ const validatePrice = (
 };
 
 const validateImgUrl = (
-  event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
-  setImageUrl: React.Dispatch<React.SetStateAction<string>>,
-  setImageUrlError: React.Dispatch<React.SetStateAction<string>>,
+  event: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
+  setImageUrl: Dispatch<SetStateAction<string>>,
+  setImageUrlError: Dispatch<SetStateAction<string>>,
 ): void => {
   const isValidImageUrl = (url: string): boolean => {
     try {
@@ -727,7 +726,7 @@ const validateImgUrl = (
   if (isValidImageUrl(sanitizedValue)) {
     setImageUrlError('');
     setImageUrl(sanitizedValue);
-    // eslint-disable-next-line no-param-reassign
+
     event.target.value = sanitizedValue;
   } else if (event.target.value === '') {
     setImageUrlError('');
@@ -739,13 +738,13 @@ const validateImgUrl = (
 };
 
 const validateBeforeCreateListing = (
-  event: React.FormEvent<HTMLFormElement>,
+  event: FormEvent<HTMLFormElement>,
   productName: string,
-  setProductNameError: React.Dispatch<React.SetStateAction<string>>,
+  setProductNameError: Dispatch<SetStateAction<string>>,
   price: number,
-  setPriceError: React.Dispatch<React.SetStateAction<string>>,
+  setPriceError: Dispatch<SetStateAction<string>>,
   imageUrl: string,
-  setImageUrlError: React.Dispatch<React.SetStateAction<string>>,
+  setImageUrlError: Dispatch<SetStateAction<string>>,
 ): boolean => {
   event.preventDefault();
   let isValidForm = true;

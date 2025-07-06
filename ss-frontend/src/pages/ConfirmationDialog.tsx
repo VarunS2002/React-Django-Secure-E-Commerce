@@ -1,4 +1,3 @@
-import React from 'react';
 import type {
   Dispatch,
   JSX,
@@ -19,9 +18,7 @@ type Props = {
   oneAction: boolean,
   open: boolean,
   setOpen: Dispatch<SetStateAction<boolean>>,
-  // eslint-disable-next-line react/require-default-props
   onConfirm?: () => void | undefined,
-  // eslint-disable-next-line react/require-default-props
   onClose?: () => void | undefined,
 }
 

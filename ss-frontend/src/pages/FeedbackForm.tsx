@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import type {
   ChangeEvent,
   JSX,
@@ -16,9 +16,9 @@ import {
 import {
   focusAndSetCursorToEnd,
   validateFeedback,
-} from 'utilities/formValidation';
-import { sendFeedback } from 'utilities/authentication';
-import ConfirmationDialog from 'pages/ConfirmationDialog';
+} from '@/utilities/formValidation';
+import { sendFeedback } from '@/utilities/authentication';
+import ConfirmationDialog from '@/pages/ConfirmationDialog';
 
 type Props = {
   open: boolean,

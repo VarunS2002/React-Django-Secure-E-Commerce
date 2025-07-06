@@ -1,4 +1,3 @@
-import React from 'react';
 import type {
   Dispatch,
   JSX,
@@ -21,7 +20,7 @@ import {
   ShoppingCart,
   Payment,
 } from '@mui/icons-material';
-import type { Item } from 'utilities/abstractions';
+import type { Item } from '@/utilities/abstractions';
 import { useNavigate } from 'react-router';
 
 type Props = {

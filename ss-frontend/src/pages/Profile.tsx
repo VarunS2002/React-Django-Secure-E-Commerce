@@ -1,4 +1,3 @@
-import React from 'react';
 import type {
   Dispatch,
   JSX,
@@ -15,7 +14,7 @@ import {
   styled,
 } from '@mui/material';
 import { MdLogout } from 'react-icons/md';
-import type { UserDetails } from 'utilities/abstractions';
+import type { UserDetails } from '@/utilities/abstractions';
 
 type Props = {
   setSignOutConfirmationOpen: Dispatch<SetStateAction<boolean>>;

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import type {
   ChangeEvent,
   Dispatch,
@@ -24,20 +24,20 @@ import {
   Visibility,
   VisibilityOff,
 } from '@mui/icons-material';
-import { signIn } from 'utilities/authentication';
+import { signIn } from '@/utilities/authentication';
 import {
   focusAndSetCursorToEnd,
   validateBeforeSignIn,
   validateEmail,
   validatePassword,
-} from 'utilities/formValidation';
-import { getRememberMe } from 'utilities/userData';
+} from '@/utilities/formValidation';
+import { getRememberMe } from '@/utilities/userData';
 import {
   UserTypes,
   FormModes,
-} from 'utilities/abstractions';
-import type { UserDetails } from 'utilities/abstractions';
-import ConfirmationDialog from 'pages/ConfirmationDialog';
+} from '@/utilities/abstractions';
+import type { UserDetails } from '@/utilities/abstractions';
+import ConfirmationDialog from '@/pages/ConfirmationDialog';
 
 type Props = {
   changeMode: () => void,

@@ -1,12 +1,12 @@
-import React, {
+import {
   type Dispatch,
+  type JSX,
   type SetStateAction,
   useEffect,
   useState,
-  JSX,
 } from 'react';
-import PageNotFound from 'pages/PageNotFound';
-import SelectAccountType from 'pages/SelectAccountType';
+import PageNotFound from '@/pages/PageNotFound';
+import SelectAccountType from '@/pages/SelectAccountType';
 import {
   Box,
   Button,
@@ -19,7 +19,7 @@ import {
   ThemeProvider,
   styled,
 } from '@mui/material';
-import themeStyles from 'utilities/styles/themeStyles';
+import themeStyles from '@/utilities/styles/themeStyles';
 import {
   Outlet,
   Route,
@@ -31,21 +31,21 @@ import {
   getUserData,
   getUserDetails,
   getUserType,
-} from 'utilities/userData';
-import resolveRoutes from 'utilities/resolveRoutes';
-import NavigationBar from 'pages/NavigationBar';
-import Store from 'pages/Store';
+} from '@/utilities/userData';
+import resolveRoutes from '@/utilities/resolveRoutes';
+import NavigationBar from '@/pages/NavigationBar';
+import Store from '@/pages/Store';
 import {
   type UserDetails,
   UserTypes,
-  Item,
-} from 'utilities/abstractions';
+  type Item,
+} from '@/utilities/abstractions';
 import {
   getItemsCustomer,
   getItemsSeller,
-} from 'utilities/listings';
-import Checkout from 'pages/Checkout';
-import CreateListingForm from 'pages/CreateListingForm';
+} from '@/utilities/listings';
+import Checkout from '@/pages/Checkout';
+import CreateListingForm from '@/pages/CreateListingForm';
 
 const RootContainer = styled(Box)(() => ({
   display: 'flex',

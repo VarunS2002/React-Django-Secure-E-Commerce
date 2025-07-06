@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import type {
   Dispatch,
   JSX,
@@ -19,10 +19,10 @@ import {
   ChevronLeft,
   Menu,
 } from '@mui/icons-material';
-import { UserTypes } from 'utilities/abstractions';
-import type { UserDetails } from 'utilities/abstractions';
-import DrawerItems from 'pages/DrawerItems';
-import ToolBarItems from 'pages/ToolBarItems';
+import { UserTypes } from '@/utilities/abstractions';
+import type { UserDetails } from '@/utilities/abstractions';
+import DrawerItems from '@/pages/DrawerItems';
+import ToolBarItems from '@/pages/ToolBarItems';
 
 type Props = {
   signedIn: boolean,

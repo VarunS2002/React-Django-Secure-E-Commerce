@@ -2,9 +2,9 @@ import type {
   Dispatch,
   SetStateAction,
 } from 'react';
-import { UserTypes } from 'utilities/abstractions';
-import type { UserDetails } from 'utilities/abstractions';
-import { API_URL } from 'utilities/api';
+import { UserTypes } from '@/utilities/abstractions';
+import type { UserDetails } from '@/utilities/abstractions';
+import { API_URL } from '@/utilities/api';
 
 const signIn = (
   email: string,

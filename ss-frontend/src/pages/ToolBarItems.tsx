@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import type {
   Dispatch,
   JSX,
@@ -11,10 +11,10 @@ import {
   Zoom,
 } from '@mui/material';
 import { AccountCircle } from '@mui/icons-material';
-import { signOut } from 'utilities/authentication';
-import type { UserDetails } from 'utilities/abstractions';
-import ConfirmationDialog from 'pages/ConfirmationDialog';
-import Profile from 'pages/Profile';
+import { signOut } from '@/utilities/authentication';
+import type { UserDetails } from '@/utilities/abstractions';
+import ConfirmationDialog from '@/pages/ConfirmationDialog';
+import Profile from '@/pages/Profile';
 
 type Props = {
   signedIn: boolean,

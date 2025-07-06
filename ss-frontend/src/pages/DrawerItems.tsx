@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import type {
   Dispatch,
   JSX,
@@ -14,10 +14,10 @@ import {
   Shop,
   Store,
 } from '@mui/icons-material';
-import { UserTypes } from 'utilities/abstractions';
-import DrawerItem from 'pages/DrawerItem';
-import About from 'pages/About';
-import FeedbackForm from 'pages/FeedbackForm';
+import { UserTypes } from '@/utilities/abstractions';
+import DrawerItem from '@/pages/DrawerItem';
+import About from '@/pages/About';
+import FeedbackForm from '@/pages/FeedbackForm';
 
 type Props = {
   section: number,

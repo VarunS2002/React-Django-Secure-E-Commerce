@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import type {
   Dispatch,
   JSX,
@@ -14,13 +14,13 @@ import {
   IconButton,
   styled,
 } from '@mui/material';
-import Cart from 'pages/Cart';
-import { UserTypes } from 'utilities/abstractions';
-import type { Item } from 'utilities/abstractions';
+import Cart from '@/pages/Cart';
+import { UserTypes } from '@/utilities/abstractions';
+import type { Item } from '@/utilities/abstractions';
 import { Delete } from '@mui/icons-material';
-import CreateListing from 'pages/CreateListing';
-import ConfirmationDialog from 'pages/ConfirmationDialog';
-import { deleteListing } from 'utilities/listings';
+import CreateListing from '@/pages/CreateListing';
+import ConfirmationDialog from '@/pages/ConfirmationDialog';
+import { deleteListing } from '@/utilities/listings';
 
 type Props = {
   items: Item[],

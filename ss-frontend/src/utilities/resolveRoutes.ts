@@ -1,4 +1,4 @@
-import { UserTypes } from 'utilities/abstractions';
+import { UserTypes } from '@/utilities/abstractions';
 
 const resolveRoutes = (
   location: string,

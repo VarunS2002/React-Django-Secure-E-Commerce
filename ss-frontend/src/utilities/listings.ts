@@ -2,8 +2,8 @@ import type {
   Dispatch,
   SetStateAction,
 } from 'react';
-import type { Item } from 'utilities/abstractions';
-import { API_URL } from 'utilities/api';
+import type { Item } from '@/utilities/abstractions';
+import { API_URL } from '@/utilities/api';
 
 const getItemsCustomer = async (): Promise<Item[]> => {
   const items: Item[] = [];

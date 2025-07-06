@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import type {
   ChangeEvent,
   Dispatch,
@@ -8,8 +8,8 @@ import type {
 import {
   FormModes,
   UserTypes,
-} from 'utilities/abstractions';
-import type { UserDetails } from 'utilities/abstractions';
+} from '@/utilities/abstractions';
+import type { UserDetails } from '@/utilities/abstractions';
 import {
   Divider,
   Grid,
@@ -23,9 +23,9 @@ import {
   ShoppingCart,
   Store,
 } from '@mui/icons-material';
-import SignIn from 'pages/SignIn';
-import SignUp from 'pages/SignUp';
-import ForgotPassword from 'pages/ForgotPassword';
+import SignIn from '@/pages/SignIn';
+import SignUp from '@/pages/SignUp';
+import ForgotPassword from '@/pages/ForgotPassword';
 
 type Props = {
   setSignedIn: Dispatch<SetStateAction<boolean>>,

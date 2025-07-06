@@ -1,5 +1,7 @@
-import React, {
+import {
+  type Dispatch,
   type JSX,
+  type SetStateAction,
   useState,
 } from 'react';
 import {
@@ -14,14 +16,14 @@ import {
   validateImgUrl,
   validatePrice,
   validateProductName,
-} from 'utilities/formValidation';
+} from '@/utilities/formValidation';
 import { useNavigate } from 'react-router';
-import { createListing } from 'utilities/listings';
-import ConfirmationDialog from 'pages/ConfirmationDialog';
-import type { Item } from 'utilities/abstractions';
+import { createListing } from '@/utilities/listings';
+import ConfirmationDialog from '@/pages/ConfirmationDialog';
+import type { Item } from '@/utilities/abstractions';
 
 type Props = {
-  setItems: React.Dispatch<React.SetStateAction<Item[]>>;
+  setItems: Dispatch<SetStateAction<Item[]>>;
 }
 
 const SubmitButton = styled(Button)(({ theme }) => ({

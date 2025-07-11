@@ -52,6 +52,7 @@ const authFetch = async (
     setSessionExpiredDialogOpen(true);
     localStorage.removeItem('access');
     localStorage.removeItem('refresh');
+    localStorage.removeItem('isSignedIn');
 
     return null;
   }

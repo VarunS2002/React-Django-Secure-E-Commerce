@@ -4,6 +4,7 @@ import {
   type SetStateAction,
   useEffect,
   useState,
+  useRef,
 } from 'react';
 import PageNotFound from '@/pages/PageNotFound';
 import SelectAccountType from '@/pages/SelectAccountType';
@@ -110,6 +111,7 @@ function App(): JSX.Element {
   const navigate = useNavigate();
   const location = useLocation();
   const [signedIn, setSignedIn] = useState(false);
+  const wasSessionExpiredDialogOpen = useRef(false);
   const [sessionExpiredDialogOpen, setSessionExpiredDialogOpen] = useState(false);
   const [userType, setUserType] = useState(getUserType());
   const [userDetails, setUserDetails] = useState(getUserDetails());
@@ -151,6 +153,14 @@ function App(): JSX.Element {
     // noinspection JSIgnoredPromiseFromCall
     fetchListings();
   }, [signedIn, userType]);
+
+  useEffect(() => {
+    if (wasSessionExpiredDialogOpen.current && !sessionExpiredDialogOpen) {
+      navigate("/login");
+    }
+
+    wasSessionExpiredDialogOpen.current = sessionExpiredDialogOpen;
+  }, [sessionExpiredDialogOpen, navigate]);
 
   return (
     <ThemeProvider theme={themeStyles()}>

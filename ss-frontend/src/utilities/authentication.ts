@@ -112,12 +112,32 @@ const signIn = (
 const signOut = (
   setSignedIn: Dispatch<SetStateAction<boolean>> | null = null,
 ): void => {
-  localStorage.removeItem('access');
-  localStorage.removeItem('refresh');
-  localStorage.removeItem('isSignedIn');
-  if (setSignedIn !== null) {
-    setSignedIn(false);
-  }
+  const refresh = localStorage.getItem('refresh');
+
+  fetch(`${API_URL}/core/user_signout/`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${localStorage.getItem('access')}`,
+    },
+    body: JSON.stringify({ refresh }),
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error('Logout failed with status ' + response.status);
+      }
+    })
+    .catch((err) => {
+      console.error('Logout failed:', err);
+    })
+    .finally(() => {
+      localStorage.removeItem('access');
+      localStorage.removeItem('refresh');
+      localStorage.removeItem('isSignedIn');
+      if (setSignedIn !== null) {
+        setSignedIn(false);
+      }
+    });
 };
 
 const signUp = (

@@ -4,6 +4,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
+from rest_framework_simplejwt.tokens import RefreshToken
 
 from core.models import OTP, Feedback, Item, Order, OrderItem
 from core.serializers import *
@@ -46,6 +47,25 @@ def user_signup(request: Request) -> Response:
         serializer.save()
         return Response(serializer.data, status=201)
     return Response(serializer.errors, status=400)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def user_signout(request: Request) -> Response:
+    """
+    Revoke the user's refresh token to sign out securely.
+    """
+    # noinspection PyBroadException
+    try:
+        refresh_token = request.data['refresh']
+        if not refresh_token:
+            return Response({"detail": "Refresh token required."}, status=400)
+
+        token = RefreshToken(refresh_token)
+        token.blacklist()
+        return Response({"detail": "Logout successful."}, status=205)
+    except Exception as _:
+        return Response({"detail": "Logout failed."}, status=400)
 
 
 def send_otp_email(email: str, otp: int) -> None:

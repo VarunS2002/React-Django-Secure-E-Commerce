@@ -23,11 +23,13 @@ import ConfirmationDialog from '@/pages/ConfirmationDialog';
 type Props = {
   open: boolean,
   setOpen: Dispatch<SetStateAction<boolean>>,
+  setSessionExpiredDialogOpen: Dispatch<SetStateAction<boolean>>,
 };
 
 function FeedbackForm({
   open,
   setOpen,
+  setSessionExpiredDialogOpen,
 }: Props): JSX.Element {
   const [feedback, setFeedback] = useState('');
   const [feedbackError, setFeedbackError] = useState('');
@@ -47,7 +49,7 @@ function FeedbackForm({
     } else if (feedbackError !== '') {
       focusAndSetCursorToEnd('feedback');
     } else {
-      sendFeedback(feedback, setFeedbackDialogOpen, setFeedbackTitle, setFeedbackMessage);
+      sendFeedback(feedback, setFeedbackDialogOpen, setFeedbackTitle, setFeedbackMessage, setSessionExpiredDialogOpen);
       handleClose();
     }
   };

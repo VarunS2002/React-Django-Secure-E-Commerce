@@ -29,6 +29,7 @@ type Props = {
   setSignedIn: Dispatch<SetStateAction<boolean>>,
   userType: UserTypes,
   userDetails: UserDetails,
+  setSessionExpiredDialogOpen: Dispatch<SetStateAction<boolean>>,
 };
 
 const AppTitleText = styled(Typography)(() => ({
@@ -145,6 +146,7 @@ function NavigationBar({
   setSignedIn,
   userType,
   userDetails,
+  setSessionExpiredDialogOpen,
 }: Props): JSX.Element {
   const [navigationBarIsOpen, setNavigationBarIsOpen] = useState(false);
 
@@ -224,6 +226,7 @@ function NavigationBar({
                       userType={userType}
                       navigationBarIsOpen={null}
                       setNavigationBarIsOpen={setNavigationBarIsOpen}
+                      setSessionExpiredDialogOpen={setSessionExpiredDialogOpen}
                     />
                   </List>
                   <Divider />
@@ -236,6 +239,7 @@ function NavigationBar({
                 userType={null}
                 navigationBarIsOpen={null}
                 setNavigationBarIsOpen={setNavigationBarIsOpen}
+                setSessionExpiredDialogOpen={setSessionExpiredDialogOpen}
               />
             </List>
             <Divider />
@@ -260,6 +264,7 @@ function NavigationBar({
                     userType={userType}
                     navigationBarIsOpen={navigationBarIsOpen}
                     setNavigationBarIsOpen={setNavigationBarIsOpen}
+                    setSessionExpiredDialogOpen={setSessionExpiredDialogOpen}
                   />
                 </List>
                 <Divider />
@@ -272,6 +277,7 @@ function NavigationBar({
               userType={null}
               navigationBarIsOpen={navigationBarIsOpen}
               setNavigationBarIsOpen={setNavigationBarIsOpen}
+              setSessionExpiredDialogOpen={setSessionExpiredDialogOpen}
             />
           </List>
           <Divider />

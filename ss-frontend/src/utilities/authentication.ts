@@ -346,20 +346,17 @@ const sendFeedback = (
   setFeedbackDialogOpen: Dispatch<SetStateAction<boolean>>,
   setFeedbackTitle: Dispatch<SetStateAction<string>>,
   setFeedbackMessage: Dispatch<SetStateAction<string>>,
+  setSessionExpiredDialogOpen: Dispatch<SetStateAction<boolean>>,
 ): void => {
   try {
-    fetch(`${API_URL}/core/feedback/`, {
+    authFetch(`${API_URL}/core/feedback/`, {
       method: 'POST',
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('access')}`,
-        'Content-Type': 'application/json',
-      },
       body: JSON.stringify({
         feedback,
       }),
-    })
+    }, setSessionExpiredDialogOpen)
       .then((response) => {
-        if (!response.ok) {
+        if (!response?.ok) {
           // If the response is not OK, throw an error to catch it later
           throw new Error('Failed to send feedback. Please try again.');
         }

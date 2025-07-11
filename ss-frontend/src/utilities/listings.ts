@@ -3,19 +3,18 @@ import type {
   SetStateAction,
 } from 'react';
 import type { Item } from '@/utilities/abstractions';
+import { authFetch } from '@/utilities/authentication';
 import { API_URL } from '@/utilities/api';
 
-const getItemsCustomer = async (): Promise<Item[]> => {
+const getItemsCustomer = async (
+  setSessionExpiredDialogOpen: Dispatch<SetStateAction<boolean>>,
+): Promise<Item[]> => {
   const items: Item[] = [];
-  await fetch(`${API_URL}/core/get_all_listings/`, {
+  await authFetch(`${API_URL}/core/get_all_listings/`, {
     method: 'GET',
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem('access')}`,
-      'Content-Type': 'application/json',
-    },
-  })
+  }, setSessionExpiredDialogOpen)
     .then((response) => {
-      if (!response.ok) {
+      if (!response?.ok) {
         // If the response is not OK, throw an error to catch it later
         throw new Error('Failed to fetch listings. Please try again.');
       }
@@ -45,13 +44,10 @@ const checkout = (
   setCheckoutTitle: Dispatch<SetStateAction<string>>,
   setCheckoutMessage: Dispatch<SetStateAction<string>>,
   setCheckoutDialogOpen: Dispatch<SetStateAction<boolean>>,
+  setSessionExpiredDialogOpen: Dispatch<SetStateAction<boolean>>,
 ): void => {
-  fetch(`${API_URL}/core/place_order/`, {
+  authFetch(`${API_URL}/core/place_order/`, {
     method: 'POST',
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem('access')}`,
-      'Content-Type': 'application/json',
-    },
     body: JSON.stringify({
       items,
       address,
@@ -62,9 +58,9 @@ const checkout = (
       csc,
       totalPrice,
     }),
-  })
+  }, setSessionExpiredDialogOpen)
     .then((response) => {
-      if (!response.ok) {
+      if (!response?.ok) {
         // If the response is not OK, throw an error to catch it later
         throw new Error('Failed to place order. Please try again.');
       }
@@ -83,17 +79,15 @@ const checkout = (
     });
 };
 
-const getItemsSeller = async (): Promise<Item[]> => {
+const getItemsSeller = async (
+  setSessionExpiredDialogOpen: Dispatch<SetStateAction<boolean>>,
+): Promise<Item[]> => {
   const items: Item[] = [];
-  await fetch(`${API_URL}/core/get_my_listings/`, {
+  await authFetch(`${API_URL}/core/get_my_listings/`, {
     method: 'GET',
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem('access')}`,
-      'Content-Type': 'application/json',
-    },
-  })
+  }, setSessionExpiredDialogOpen)
     .then((response) => {
-      if (!response.ok) {
+      if (!response?.ok) {
         // If the response is not OK, throw an error to catch it later
         throw new Error('Failed to fetch listings. Please try again.');
       }
@@ -117,19 +111,16 @@ const deleteListing = (
   setDialogOpen: Dispatch<SetStateAction<boolean>>,
   setDialogTitle: Dispatch<SetStateAction<string>>,
   setDialogMessage: Dispatch<SetStateAction<string>>,
+  setSessionExpiredDialogOpen: Dispatch<SetStateAction<boolean>>,
 ): void => {
-  fetch(`${API_URL}/core/delete_listing/`, {
+  authFetch(`${API_URL}/core/delete_listing/`, {
     method: 'POST',
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem('access')}`,
-      'Content-Type': 'application/json',
-    },
     body: JSON.stringify({
       id,
     }),
-  })
+  }, setSessionExpiredDialogOpen)
     .then((response) => {
-      if (!response.ok) {
+      if (!response?.ok) {
         // If the response is not OK, throw an error to catch it later
         throw new Error('Failed to delete listing. Please try again.');
       }
@@ -158,21 +149,18 @@ const createListing = (
   setDialogTitle: Dispatch<SetStateAction<string>>,
   setDialogMessage: Dispatch<SetStateAction<string>>,
   setItems: Dispatch<SetStateAction<Item[]>>,
+  setSessionExpiredDialogOpen: Dispatch<SetStateAction<boolean>>,
 ): void => {
-  fetch(`${API_URL}/core/create_listing/`, {
+  authFetch(`${API_URL}/core/create_listing/`, {
     method: 'POST',
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem('access')}`,
-      'Content-Type': 'application/json',
-    },
     body: JSON.stringify({
       name,
       price,
       imageUrl,
     }),
-  })
+  }, setSessionExpiredDialogOpen)
     .then((response) => {
-      if (!response.ok) {
+      if (!response?.ok) {
         // If the response is not OK, throw an error to catch it later
         throw new Error('Failed to create listing. Please try again.');
       }

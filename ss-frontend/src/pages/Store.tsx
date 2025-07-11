@@ -26,6 +26,7 @@ type Props = {
   items: Item[],
   setItems: Dispatch<SetStateAction<Item[]>>
   userType: UserTypes,
+  setSessionExpiredDialogOpen: Dispatch<SetStateAction<boolean>>,
 }
 
 const NameTitle = styled(Typography)(() => ({
@@ -40,6 +41,7 @@ function Store(
     items,
     setItems,
     userType,
+    setSessionExpiredDialogOpen,
   }: Props,
 ): JSX.Element {
   // eslint-disable-next-line prefer-const
@@ -177,6 +179,7 @@ function Store(
                           setDialogOpen,
                           setDialogTitle,
                           setDialogMessage,
+                          setSessionExpiredDialogOpen,
                         )}
                       />
                       <IconButton

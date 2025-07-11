@@ -24,6 +24,7 @@ type Props = {
   userType: UserTypes | null,
   navigationBarIsOpen: boolean | null,
   setNavigationBarIsOpen: Dispatch<SetStateAction<boolean>>,
+  setSessionExpiredDialogOpen: Dispatch<SetStateAction<boolean>>,
 };
 
 function DrawerItems({
@@ -31,6 +32,7 @@ function DrawerItems({
   userType,
   navigationBarIsOpen,
   setNavigationBarIsOpen,
+  setSessionExpiredDialogOpen,
 }: Props): JSX.Element {
   const shouldDisplayTooltip = navigationBarIsOpen === false;
   const navigate = useNavigate();
@@ -100,7 +102,7 @@ function DrawerItems({
         onClick={openFeedbackForm}
         shouldDisplayTooltip={shouldDisplayTooltip}
       />
-      <FeedbackForm open={feedbackOpen} setOpen={setFeedbackOpen} />
+      <FeedbackForm open={feedbackOpen} setOpen={setFeedbackOpen} setSessionExpiredDialogOpen={setSessionExpiredDialogOpen} />
     </>
   );
 

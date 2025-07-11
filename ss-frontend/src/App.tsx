@@ -84,10 +84,15 @@ type Props = {
   setSignedIn: Dispatch<SetStateAction<boolean>>,
   userType: UserTypes,
   userDetails: UserDetails,
+  setSessionExpiredDialogOpen: Dispatch<SetStateAction<boolean>>,
 };
 
 function Layout({
-  signedIn, setSignedIn, userType, userDetails,
+  signedIn,
+  setSignedIn,
+  userType,
+  userDetails,
+  setSessionExpiredDialogOpen,
 }: Props): JSX.Element {
   return (
     <RootContainer>
@@ -97,6 +102,7 @@ function Layout({
         setSignedIn={setSignedIn}
         userType={userType}
         userDetails={userDetails}
+        setSessionExpiredDialogOpen={setSessionExpiredDialogOpen}
       />
       <ContentContainer>
         <ToolbarSpacer />
@@ -144,9 +150,9 @@ function App(): JSX.Element {
     const fetchListings = async (): Promise<void> => {
       if (signedIn) {
         if (userType === UserTypes.Customer) {
-          setItems(await getItemsCustomer());
+          setItems(await getItemsCustomer(setSessionExpiredDialogOpen));
         } else {
-          setItems(await getItemsSeller());
+          setItems(await getItemsSeller(setSessionExpiredDialogOpen));
         }
       }
     };
@@ -175,6 +181,7 @@ function App(): JSX.Element {
               setSignedIn={setSignedIn}
               userType={userType}
               userDetails={userDetails}
+              setSessionExpiredDialogOpen={setSessionExpiredDialogOpen}
             />
           )}
         >
@@ -191,21 +198,20 @@ function App(): JSX.Element {
           />
           <Route
             path="store"
-            element={(<Store items={items} setItems={setItems} userType={userType} />
-            )}
+            element={<Store items={items} setItems={setItems} userType={userType} setSessionExpiredDialogOpen={setSessionExpiredDialogOpen} />}
           />
           <Route
             path="checkout"
-            element={<Checkout items={items} setItems={setItems} />}
+            element={<Checkout items={items} setItems={setItems} setSessionExpiredDialogOpen={setSessionExpiredDialogOpen} />}
           />
           <Route
             path="listings"
-            element={(<Store items={items} setItems={setItems} userType={userType} />)}
+            element={<Store items={items} setItems={setItems} userType={userType} setSessionExpiredDialogOpen={setSessionExpiredDialogOpen} />}
           />
 
           <Route
             path="create-listing"
-            element={<CreateListingForm setItems={setItems} />}
+            element={<CreateListingForm setItems={setItems} setSessionExpiredDialogOpen={setSessionExpiredDialogOpen} />}
           />
         </Route>
       </Routes>

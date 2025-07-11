@@ -23,7 +23,8 @@ import ConfirmationDialog from '@/pages/ConfirmationDialog';
 import type { Item } from '@/utilities/abstractions';
 
 type Props = {
-  setItems: Dispatch<SetStateAction<Item[]>>;
+  setItems: Dispatch<SetStateAction<Item[]>>,
+  setSessionExpiredDialogOpen: Dispatch<SetStateAction<boolean>>,
 }
 
 const SubmitButton = styled(Button)(({ theme }) => ({
@@ -32,6 +33,7 @@ const SubmitButton = styled(Button)(({ theme }) => ({
 
 function CreateListingForm({
   setItems,
+  setSessionExpiredDialogOpen,
 }: Props): JSX.Element {
   const navigate = useNavigate();
   const [name, setName] = useState('');
@@ -64,7 +66,16 @@ function CreateListingForm({
             imageUrl,
             setImageUrlError,
           )) {
-            createListing(name, price, imageUrl, setDialogOpen, setDialogTitle, setDialogMessage, setItems);
+            createListing(
+              name,
+              price,
+              imageUrl,
+              setDialogOpen,
+              setDialogTitle,
+              setDialogMessage,
+              setItems,
+              setSessionExpiredDialogOpen
+            );
           }
         }}
         noValidate

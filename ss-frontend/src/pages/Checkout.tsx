@@ -28,8 +28,9 @@ import {
 import { checkout } from '@/utilities/listings';
 
 type Props = {
-  items: Item[]
-  setItems: Dispatch<SetStateAction<Item[]>>
+  items: Item[],
+  setItems: Dispatch<SetStateAction<Item[]>>,
+  setSessionExpiredDialogOpen: Dispatch<SetStateAction<boolean>>,
 }
 
 const PaperContainer = styled(Box)(() => ({
@@ -45,6 +46,7 @@ const SubmitButton = styled(Button)(({ theme }) => ({
 function Checkout({
   items,
   setItems,
+  setSessionExpiredDialogOpen,
 }: Props): JSX.Element {
   const navigate = useNavigate();
   const itemsInCart = items.filter((item) => item.quantity > 0);
@@ -119,6 +121,7 @@ function Checkout({
                 setCheckoutTitle,
                 setCheckoutMessage,
                 setCheckoutDialogOpen,
+                setSessionExpiredDialogOpen,
               );
             }
           }}

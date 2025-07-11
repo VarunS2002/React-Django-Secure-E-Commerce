@@ -9,6 +9,65 @@ import {
 import type { UserDetails } from '@/utilities/abstractions';
 import { API_URL } from '@/utilities/api';
 
+const refreshAccessToken = async (): Promise<string | null> => {
+  const refreshToken = localStorage.getItem('refresh');
+  if (!refreshToken) return null;
+
+  const response = await fetch(`${API_URL}/token/refresh/`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ refresh: refreshToken }),
+  });
+
+  if (!response.ok) return null;
+
+  const data = await response.json();
+  if (data.access) localStorage.setItem('access', data.access);
+  if (data.refresh) localStorage.setItem('refresh', data.refresh);
+
+  return data.access;
+};
+
+const authFetch = async (
+  url: string,
+  options: RequestInit = {},
+  setSessionExpiredDialogOpen: Dispatch<SetStateAction<boolean>>,
+): Promise<null | Response> => {
+  const access = localStorage.getItem('access');
+
+  let response = await fetch(url, {
+    ...options,
+    headers: {
+      Authorization: `Bearer ${access}`,
+      ...options.headers,
+      'Content-Type': 'application/json',
+    },
+  });
+
+  if (response.status !== 401) return response;
+
+  const newAccess = await refreshAccessToken();
+
+  if (!newAccess) {
+    setSessionExpiredDialogOpen(true);
+    localStorage.removeItem('access');
+    localStorage.removeItem('refresh');
+
+    return null;
+  }
+
+  response = await fetch(url, {
+    ...options,
+    headers: {
+      Authorization: `Bearer ${newAccess}`,
+      ...options.headers,
+      'Content-Type': 'application/json',
+    },
+  });
+
+  return response;
+};
+
 const signIn = (
   email: string,
   password: string,
@@ -324,6 +383,7 @@ const sendFeedback = (
 };
 
 export {
+  authFetch,
   signIn,
   signOut,
   signUp,

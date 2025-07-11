@@ -4,7 +4,10 @@ import type {
 } from 'react';
 import { UserTypes } from '@/utilities/abstractions';
 import type { UserDetails } from '@/utilities/abstractions';
-import { signOut } from '@/utilities/authentication';
+import {
+  authFetch,
+  signOut,
+} from '@/utilities/authentication';
 import { API_URL } from '@/utilities/api';
 
 const getUserType = (): UserTypes => {
@@ -36,49 +39,12 @@ const getUserData = async (
   setSessionExpiredDialogOpen: Dispatch<SetStateAction<boolean>>,
 ): Promise<boolean> => {
   const token = localStorage.getItem('access');
-  let refreshToken = localStorage.getItem('refresh');
-
-  const fetchUser = async (accessToken: string): Promise<null | Record<string, never>> => {
-    const response = await fetch(`${API_URL}/core/current_user/`, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
-
-    if (response.status === 401) {
-      return null;
-    }
-
-    return response.json();
-  };
-
-  const refreshAccessToken = async (): Promise<null | string> => {
-    if (!refreshToken) return null;
-    const response = await fetch(`${API_URL}/token/refresh/`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ refresh: refreshToken }),
-    });
-
-    if (!response.ok) return null;
-
-    const data = await response.json();
-    if (data.access) localStorage.setItem('access', data.access);
-    if (data.refresh) {
-      refreshToken = data.refresh;
-      localStorage.setItem('refresh', data.refresh);
-    }
-
-    return data.access;
-  };
 
   if (token && (getIsSignedIn() || getRememberMe())) {
-    let userData = await fetchUser(token);
-
-    if (!userData) {
-      const newToken = await refreshAccessToken();
-      if (newToken) userData = await fetchUser(newToken);
-    }
+    const userData = await authFetch(`${API_URL}/core/current_user/`, {}, setSessionExpiredDialogOpen)
+      .then(
+        (response) => response?.json()
+      );
 
     if (userData) {
       setUserDetails({
@@ -93,16 +59,14 @@ const getUserData = async (
       localStorage.setItem('isSignedIn', String(true));
       return true;
     }
-
-    signOut();
-    setSessionExpiredDialogOpen(true);
-    localStorage.removeItem('access');
-    localStorage.removeItem('refresh');
     return false;
   }
-  localStorage.removeItem('access');
-  localStorage.removeItem('refresh');
-
+  else if (token) {
+    signOut();
+  }
+  else {
+    localStorage.removeItem('refresh');
+  }
   return false;
 };
 

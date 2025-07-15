@@ -1,3 +1,5 @@
+import re
+import requests
 import secrets
 
 from rest_framework.decorators import api_view, permission_classes
@@ -217,6 +219,39 @@ def delete_listing(request: Request) -> Response:
     return Response({}, status=200)
 
 
+def is_valid_image_url(url: str) -> bool:
+    image_url_pattern = re.compile(
+        r'^https?://.*\.(avif|apng|bmp|gif|ico|jpeg|jpg|png|svg|tiff?|webp|heic)$',
+        re.IGNORECASE
+    )
+    if not image_url_pattern.match(url):
+        return False
+
+    image_content_types = {
+        'image/avif',
+        'image/apng',
+        'image/bmp',
+        'image/gif',
+        'image/x-icon',
+        'image/vnd.microsoft.icon',
+        'image/jpeg',
+        'image/jpg',
+        'image/png',
+        'image/svg+xml',
+        'image/tiff',
+        'image/webp',
+        'image/heic'
+    }
+    try:
+        response = requests.head(url, timeout=3)
+        content_type = response.headers.get("Content-Type", "")
+        if not any(img_type in content_type for img_type in image_content_types):
+            return False
+    except requests.RequestException:
+        return False
+    return True
+
+
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def create_listing(request: Request) -> Response:
@@ -226,10 +261,22 @@ def create_listing(request: Request) -> Response:
     if request.user.user_type != 1:
         return Response({}, status=403)
 
-    item = Item.objects.create(name=request.data['name'],
-                               price=request.data['price'],
-                               image_url=request.data['imageUrl'],
-                               seller=request.user)
+    name = request.data.get('name')
+    price = request.data.get('price')
+    image_url = request.data.get('imageUrl')
+
+    if not name or not price or not image_url:
+        return Response({"detail": "Missing fields"}, status=400)
+
+    if not is_valid_image_url(image_url):
+        return Response({"detail": "Invalid image URL"}, status=400)
+
+    item = Item.objects.create(
+        name=name,
+        price=price,
+        image_url=image_url,
+        seller=request.user
+    )
     item.save()
     json = {
         'id': item.id,

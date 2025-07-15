@@ -209,21 +209,29 @@ def get_my_listings(request: Request) -> Response:
     return Response(listings_json, status=200)
 
 
-@api_view(['POST'])
+@api_view(['DELETE'])
 @permission_classes([IsAuthenticated])
 def delete_listing(request: Request) -> Response:
     """
-    Delete a listing.
+    Deletes a product listing.
     """
     if request.user.user_type != 1:
-        return Response({}, status=403)
+        return Response({"detail": "Permission denied"}, status=403)
 
-    item = Item.objects.get(id=request.data['id'])
+    item_id = request.data.get("id")
+    if not item_id:
+        return Response({"detail": "Missing 'id' field"}, status=400)
+
+    try:
+        item = Item.objects.get(id=item_id)
+    except Item.DoesNotExist:
+        return Response({"detail": "Listing not found"}, status=404)
+
     if item.seller != request.user:
-        return Response({}, status=403)
-    item.delete()
+        return Response({"detail": "Permission denied"}, status=403)
 
-    return Response({}, status=200)
+    item.delete()
+    return Response({"detail": "Listing deleted successfully"}, status=200)
 
 
 def is_valid_image_url(url: str) -> bool:

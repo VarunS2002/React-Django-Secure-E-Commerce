@@ -114,7 +114,7 @@ const deleteListing = (
   setSessionExpiredDialogOpen: Dispatch<SetStateAction<boolean>>,
 ): void => {
   authFetch(`${API_URL}/core/delete_listing/`, {
-    method: 'POST',
+    method: 'DELETE',
     body: JSON.stringify({
       id,
     }),

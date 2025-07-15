@@ -214,6 +214,8 @@ def delete_listing(request: Request) -> Response:
         return Response({}, status=403)
 
     item = Item.objects.get(id=request.data['id'])
+    if item.seller != request.user:
+        return Response({}, status=403)
     item.delete()
 
     return Response({}, status=200)

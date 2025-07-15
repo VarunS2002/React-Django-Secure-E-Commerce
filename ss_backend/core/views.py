@@ -1,7 +1,8 @@
 import re
-import requests
 import secrets
 
+import bleach
+import requests
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.request import Request
@@ -13,6 +14,10 @@ from core.serializers import *
 
 
 # Create your views here.
+
+def is_clean_data(data: str) -> bool:
+    return bleach.clean(data, tags=[], strip=True) == data
+
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])

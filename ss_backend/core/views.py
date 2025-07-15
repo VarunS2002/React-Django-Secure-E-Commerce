@@ -227,11 +227,17 @@ def delete_listing(request: Request) -> Response:
 
 
 def is_valid_image_url(url: str) -> bool:
+    if not is_clean_data(url):
+        return False
+
     image_url_pattern = re.compile(
         r'^https?://.*\.(avif|apng|bmp|gif|ico|jpeg|jpg|png|svg|tiff?|webp|heic)$',
         re.IGNORECASE
     )
     if not image_url_pattern.match(url):
+        return False
+
+    if len(url) > 2000:
         return False
 
     image_content_types = {
@@ -274,6 +280,15 @@ def create_listing(request: Request) -> Response:
 
     if not name or not price or not image_url:
         return Response({"detail": "Missing fields"}, status=400)
+
+    if not is_clean_data(name) or not (2 <= len(name) <= 50):
+        return Response({"detail": "Invalid name"}, status=400)
+
+    try:
+        if not (0 < int(price) <= 1_000_000):
+            return Response({"detail": "Invalid price"}, status=400)
+    except ValueError:
+        return Response({"detail": "Invalid price"}, status=400)
 
     if not is_valid_image_url(image_url):
         return Response({"detail": "Invalid image URL"}, status=400)

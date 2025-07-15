@@ -269,29 +269,30 @@ def is_valid_image_url(url: str) -> bool:
 @permission_classes([IsAuthenticated])
 def create_listing(request: Request) -> Response:
     """
-    Create a listing.
+    Create a new product listing.
     """
     if request.user.user_type != 1:
-        return Response({}, status=403)
+        return Response({"detail": "Permission Denied"}, status=403)
 
-    name = request.data.get('name')
+    name = request.data.get('name', '').strip()
     price = request.data.get('price')
-    image_url = request.data.get('imageUrl')
+    image_url = request.data.get('imageUrl', '').strip()
 
     if not name or not price or not image_url:
-        return Response({"detail": "Missing fields"}, status=400)
+        return Response({"detail": "Missing required fields: name, price, or imageUrl."}, status=400)
 
     if not is_clean_data(name) or not (2 <= len(name) <= 50):
-        return Response({"detail": "Invalid name"}, status=400)
+        return Response({"detail": "Product name must be 2–50 characters with no invalid characters."}, status=422)
 
     try:
-        if not (0 < int(price) <= 1_000_000):
-            return Response({"detail": "Invalid price"}, status=400)
-    except ValueError:
-        return Response({"detail": "Invalid price"}, status=400)
+        price = int(price)
+        if not (1 <= price <= 1_000_000):
+            return Response({"detail": "Price must be between 1 and 1,000,000."}, status=422)
+    except (ValueError, TypeError):
+        return Response({"detail": "Price must be a valid integer."}, status=422)
 
     if not is_valid_image_url(image_url):
-        return Response({"detail": "Invalid image URL"}, status=400)
+        return Response({"detail": "Invalid image URL."}, status=422)
 
     item = Item.objects.create(
         name=name,
@@ -299,14 +300,13 @@ def create_listing(request: Request) -> Response:
         image_url=image_url,
         seller=request.user
     )
-    item.save()
-    json = {
+
+    return Response({
+        "detail": "Listing created successfully",
         'id': item.id,
         'name': item.name,
-        'price': f'${item.price}',
+        'price': f"${item.price}",
         'imageUrl': item.image_url,
         'quantity': 0,
         'seller': item.seller.first_name
-    }
-
-    return Response(json, status=201)
+    }, status=201)

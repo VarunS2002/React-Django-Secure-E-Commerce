@@ -143,10 +143,10 @@ def feedback(request: Request) -> Response:
 @permission_classes([IsAuthenticated])
 def get_all_listings(request: Request) -> Response:
     """
-    Get all the listings.
+    Get all the listings from all sellers.
     """
     if request.user.user_type != 0:
-        return Response({}, status=403)
+        return Response({"detail": "Permission denied"}, status=403)
 
     listings = Item.objects.all()
     listings_json = []
@@ -190,10 +190,11 @@ def place_order(request: Request) -> Response:
 @permission_classes([IsAuthenticated])
 def get_my_listings(request: Request) -> Response:
     """
-    Get the listings of the current user.
+    Get all the listings of the current seller.
     """
     if request.user.user_type != 1:
-        return Response({}, status=403)
+        return Response({"detail": "Permission denied"}, status=403)
+
     listings = Item.objects.filter(seller=request.user)
     listings_json = []
     for listing in listings:

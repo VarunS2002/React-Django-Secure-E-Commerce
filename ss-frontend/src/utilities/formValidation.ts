@@ -92,9 +92,7 @@ const validatePassword = (
       setPassword('');
       setPasswordError('');
     } else {
-      setPassword(cleanData(event.target.value));
-
-      event.target.value = cleanData(event.target.value);
+      setPassword(event.target.value);
       setPasswordError('');
     }
   } else if (mode === FormModes.SignUp) {
@@ -116,9 +114,7 @@ const validatePassword = (
         setPassword('');
         setPasswordError('');
       } else if (isValidPassword) {
-        setPassword(cleanData(event.target.value));
-
-        event.target.value = cleanData(event.target.value);
+        setPassword(event.target.value);
         setPasswordError('');
       } else {
         setPassword('');

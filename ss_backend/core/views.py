@@ -8,7 +8,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.tokens import RefreshToken, TokenError
 
 from core.models import OTP, Feedback, Item, Order, OrderItem
 from core.serializers import *
@@ -72,8 +72,10 @@ def user_signout(request: Request) -> Response:
         token = RefreshToken(refresh_token)
         token.blacklist()
         return Response({"detail": "Logout successful."}, status=205)
-    except Exception as _:
-        return Response({"detail": "Logout failed."}, status=400)
+    except TokenError:
+        return Response({"detail": "Invalid or expired refresh token."}, status=400)
+    except Exception:
+        return Response({"detail": "Logout failed."}, status=500)
 
 
 def send_otp_email(email: str, otp: int) -> None:

@@ -3,6 +3,7 @@ import secrets
 
 import bleach
 import requests
+from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.request import Request
@@ -113,19 +114,44 @@ def reset_password(request: Request) -> Response:
     """
     Verify the OTP entered by the user and reset the password.
     """
-    account = Account.objects.get(email=request.data['email'])
-    otp = OTP.objects.get(account=account)
+    email = request.data.get("email", "").strip()
+    otp_input = request.data.get("otp", "").strip()
+    new_password = request.data.get("password", "")
 
-    if otp.otp == request.data['otp'] and otp.is_valid():
+    if not email or not otp_input or not new_password:
+        return Response({"detail": "Missing required fields."}, status=400)
+
+    email_pattern = re.compile(r'^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$')
+    if not email_pattern.match(email) or not (len(email) <= 70):
+        return Response({"detail": "Invalid email address."}, status=422)
+
+    if not otp_input.isdigit() or len(otp_input) != 4:
+        return Response({"detail": "Invalid OTP format."}, status=422)
+
+    password_pattern = re.compile(
+        r'^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])[a-zA-Z0-9!"#$%&\'()*+,\-./:;<=>?@\[\]^_`{|}~]{6,30}$'
+    )
+    if not password_pattern.match(new_password) or not (6 <= len(new_password) <= 30):
+        return Response({"detail": "Invalid or weak password."}, status=422)
+    if new_password == email:
+        return Response({"detail": "Password cannot be same as the email."}, status=422)
+
+    try:
+        account = Account.objects.get(email=email)
+        otp = OTP.objects.get(account=account)
+    except ObjectDoesNotExist:
+        return Response({"detail": "OTP verification failed."}, status=400)
+
+    if otp.otp == otp_input and otp.is_valid():
         otp.used = True
-        otp.save()
+        account.set_password(new_password)
 
-        account.set_password(request.data['password'])
+        otp.save()
         account.save()
 
-        return Response({}, status=200)
+        return Response({"detail": "Password reset successful."}, status=200)
 
-    return Response({}, status=400)
+    return Response({"detail": "OTP verification failed."}, status=400)
 
 
 @api_view(['POST'])

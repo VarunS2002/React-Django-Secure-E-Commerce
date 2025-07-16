@@ -28,10 +28,14 @@ def current_user(request: Request) -> Response:
     This view will be used anytime the user revisits the site,
     reloads the page, or does anything else that causes React to forget its state.
     """
-    serializer = AccountSerializer(request.user)
-    data = serializer.data
+    # noinspection TryExceptPass,PyBroadException
+    try:
+        serializer = AccountSerializer(request.user)
+        return Response(serializer.data, status=200)
+    except Exception:
+        pass
 
-    return Response(data)
+    return Response({"detail": "Failed to fetch user data."}, status=500)
 
 
 @api_view(['POST'])

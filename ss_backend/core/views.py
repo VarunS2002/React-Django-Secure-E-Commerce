@@ -94,18 +94,30 @@ def generate_otp(request: Request) -> Response:
     Generate an OTP for the user and delete the previous OTP.
     Send the new OTP to the user's email.
     """
-    generated_otp = secrets.choice(range(1000, 9999))
+    email = request.data.get('email')
+    if not email:
+        return Response({"detail": "Missing 'email' field."}, status=400)
 
-    account = Account.objects.get(email=request.data['email'])
-    if account is None:
-        return Response({}, status=200)
+    email_pattern = re.compile(r'^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$')
+    if not email_pattern.match(email) or not (len(email) <= 70):
+        return Response({"detail": "Invalid email address."}, status=422)
+
+    account = Account.objects.get(email=email)
+    if account.DoesNotExist:
+        Response({'detail': 'OTP has been sent if the account exists.'}, status=201)
+
     OTP.objects.filter(account=account).delete()
+    generated_otp = secrets.choice(range(1000, 9999))
     otp = OTP.objects.create(account=account, otp=generated_otp)
 
-    # Send the OTP to the user's email using smtp
-    send_otp_email(account.email, otp.otp)
+    # Send the OTP to the user's email
+    # noinspection PyBroadException
+    try:
+        send_otp_email(account.email, otp.otp)
+    except Exception:
+        return Response({'detail': 'Failed to send OTP email.'}, status=500)
 
-    return Response({}, status=201)
+    return Response({'detail': 'OTP has been sent if the account exists.'}, status=201)
 
 
 @api_view(['POST'])

@@ -100,7 +100,7 @@ def generate_otp(request: Request) -> Response:
     Generate an OTP for the user and delete the previous OTP.
     Send the new OTP to the user's email.
     """
-    email = request.data.get('email')
+    email = request.data.get("email", "").strip()
     if not email:
         return Response({"detail": "Missing 'email' field."}, status=400)
 

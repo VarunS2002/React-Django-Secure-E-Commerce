@@ -132,11 +132,19 @@ def reset_password(request: Request) -> Response:
 @permission_classes([IsAuthenticated])
 def feedback(request: Request) -> Response:
     """
-    Send feedback to the admin without serializing the data.
+    Submit feedback to the admin.
     """
-    Feedback.objects.create(account=request.user, message=request.data['feedback'])
+    feedback_text = request.data.get("feedback", "").strip()
 
-    return Response({}, status=201)
+    if not feedback_text:
+        return Response({"detail": "Feedback message is required."}, status=400)
+
+    if not is_clean_data(feedback_text) or not (2 <= len(feedback_text) <= 1000):
+        return Response({"detail": "Feedback must be 2–1000 characters with no invalid characters."}, status=422)
+
+    Feedback.objects.create(account=request.user, message=feedback_text)
+
+    return Response({"detail": "Feedback submitted successfully."}, status=201)
 
 
 @api_view(['GET'])

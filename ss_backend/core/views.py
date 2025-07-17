@@ -69,7 +69,7 @@ def user_signout(request: Request) -> Response:
     """
     # noinspection PyBroadException
     try:
-        refresh_token = request.data['refresh']
+        refresh_token = request.data.get("refresh")
         if not refresh_token:
             return Response({"detail": "Refresh token required."}, status=400)
 
@@ -82,6 +82,7 @@ def user_signout(request: Request) -> Response:
         return Response({"detail": "Logout failed."}, status=500)
 
 
+# noinspection PyUnusedLocal
 def send_otp_email(email: str, otp: int) -> None:
     """
     Send the OTP to the user's email.
@@ -110,7 +111,7 @@ def generate_otp(request: Request) -> Response:
 
     account = Account.objects.get(email=email)
     if account.DoesNotExist:
-        Response({'detail': 'OTP has been sent if the account exists.'}, status=201)
+        Response({"detail": "OTP has been sent if the account exists."}, status=201)
 
     OTP.objects.filter(account=account).delete()
     generated_otp = secrets.choice(range(1000, 9999))
@@ -121,9 +122,9 @@ def generate_otp(request: Request) -> Response:
     try:
         send_otp_email(account.email, otp.otp)
     except Exception:
-        return Response({'detail': 'Failed to send OTP email.'}, status=500)
+        return Response({"detail": "Failed to send OTP email."}, status=500)
 
-    return Response({'detail': 'OTP has been sent if the account exists.'}, status=201)
+    return Response({"detail": "OTP has been sent if the account exists."}, status=201)
 
 
 @api_view(['POST'])
@@ -335,9 +336,9 @@ def create_listing(request: Request) -> Response:
     if request.user.user_type != 1:
         return Response({"detail": "Permission Denied"}, status=403)
 
-    name = request.data.get('name', '').strip()
-    price = request.data.get('price')
-    image_url = request.data.get('imageUrl', '').strip()
+    name = request.data.get("name", "").strip()
+    price = request.data.get("price")
+    image_url = request.data.get("imageUrl", "").strip()
 
     if not name or not price or not image_url:
         return Response({"detail": "Missing required fields: name, price, or imageUrl."}, status=400)

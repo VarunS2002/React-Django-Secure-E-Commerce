@@ -40,16 +40,6 @@ def current_user(request: Request) -> Response:
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
-def account_exists(request: Request) -> Response:
-    """
-    Determine whether an account exists or not.
-    """
-    email_exists = Account.objects.filter(email=request.data['email']).exists()
-    return Response({'exists': email_exists})
-
-
-@api_view(['POST'])
-@permission_classes([AllowAny])
 def user_signup(request: Request) -> Response:
     """
     Create a new user.

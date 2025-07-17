@@ -4,7 +4,6 @@ from core.views import *
 
 urlpatterns = [
     path('current_user/', current_user, name='current_user'),
-    path('account_exists/', account_exists, name='account_exists'),
     path('user_signup/', user_signup, name='user_signup'),
     path('user_signout/', user_signout, name='user_signout'),
     path('generate_otp/', generate_otp, name='generate_otp'),

@@ -67,6 +67,7 @@ function SignUp({
   const [signUpDialogOpen, setSignUpDialogOpen] = useState(false);
   const [signUpTitle, setSignUpTitle] = useState('');
   const [signUpMessage, setSignUpMessage] = useState('');
+  const [switchToSignIn, setSwitchToSignIn] = useState(false);
   const [accountType, setAccountType] = useState(Number.POSITIVE_INFINITY);
   const [accountTypeError, setAccountTypeError] = useState('');
   const [firstName, setFirstName] = useState('');
@@ -109,10 +110,10 @@ function SignUp({
                 lastName,
                 email,
                 password,
-                changeMode,
                 setSignUpDialogOpen,
                 setSignUpTitle,
                 setSignUpMessage,
+                setSwitchToSignIn,
               );
             }
           }}
@@ -311,6 +312,12 @@ function SignUp({
         oneAction
         open={signUpDialogOpen}
         setOpen={setSignUpDialogOpen}
+        onClose={() => {
+          if (switchToSignIn) changeMode();
+        }}
+        onConfirm={() => {
+          if (switchToSignIn) changeMode();
+        }}
       />
     </Container>
   );

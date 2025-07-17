@@ -206,10 +206,10 @@ const signUp = (
   lastName: string,
   email: string,
   password: string,
-  changeMode: () => void,
   setSignUpDialogOpen: Dispatch<SetStateAction<boolean>>,
   setSignUpTitle: Dispatch<SetStateAction<string>>,
   setSignUpMessage: Dispatch<SetStateAction<string>>,
+  setSwitchToSignIn: Dispatch<SetStateAction<boolean>>,
 ): void => {
   try {
     fetch(`${API_URL}/core/user_signup/`, {
@@ -230,6 +230,7 @@ const signUp = (
           // If the response is not OK, throw an error to catch it later
           throw new Error('Failed to sign up. Please try again.');
         } else if (response.status === 202) {
+          setSwitchToSignIn(true);
           setSignUpDialogOpen(true);
           setSignUpTitle('Sign Up Successful');
           setSignUpMessage('We have sent you a confirmation email to complete registration.');
@@ -239,6 +240,7 @@ const signUp = (
       })
       .then((data) => {
         if (data !== null) {
+          setSwitchToSignIn(true);
           setSignUpDialogOpen(true);
           setSignUpTitle('Sign Up Successful');
           setSignUpMessage('Please sign in.');
@@ -246,11 +248,13 @@ const signUp = (
       })
       .catch((error) => {
         // Handle any errors that occurred during the fetch operation
+        setSwitchToSignIn(false);
         setSignUpDialogOpen(true);
         setSignUpTitle('Sign Up Failed');
         setSignUpMessage('Please try again.');
       });
   } catch (error) {
+    setSwitchToSignIn(false);
     setSignUpDialogOpen(true);
     setSignUpTitle('Sign Up Failed');
     setSignUpMessage('Please try again.');

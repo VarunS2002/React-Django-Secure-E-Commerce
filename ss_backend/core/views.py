@@ -44,11 +44,52 @@ def user_signup(request: Request) -> Response:
     """
     Create a new user.
     """
-    serializer = AccountSerializer(data=request.data)
-    if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data, status=201)
-    return Response(serializer.errors, status=400)
+    required_fields = ['email', 'password', 'first_name', 'last_name', 'user_type']
+    for field in required_fields:
+        if field not in request.data:
+            return Response({"detail": f"Missing '{field}' field."}, status=400)
+
+    email = request.data.get("email", "").strip()
+    email_pattern = re.compile(r'^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$')
+    if not email_pattern.match(email) or not (len(email) <= 70):
+        return Response({"detail": "Invalid email address."}, status=422)
+
+    if Account.objects.filter(email=email).exists():
+        # noinspection PyBroadException
+        try:
+            send_account_exists_email(email)
+        except Exception:
+            return Response({"detail": "Failed to send confirmation email."}, status=500)
+        return Response({"detail": "We have sent you a confirmation email to complete registration."}, status=202)
+
+    new_password = request.data.get("password", "")
+    password_pattern = re.compile(
+        r'^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])[a-zA-Z0-9!"#$%&\'()*+,\-./:;<=>?@\[\]^_`{|}~]{6,30}$'
+    )
+    if not password_pattern.match(new_password) or not (6 <= len(new_password) <= 30):
+        return Response({"detail": "Invalid or weak password."}, status=422)
+    if new_password == email:
+        return Response({"detail": "Password cannot be same as the email."}, status=422)
+
+    first_name = request.data.get("first_name", "").strip()
+    last_name = request.data.get("last_name", "").strip()
+    if not is_clean_data(first_name) or not (2 <= len(first_name) <= 40):
+        return Response({"detail": "First name must be 2–40 characters with no invalid characters."}, status=422)
+    if not is_clean_data(last_name) or not (2 <= len(last_name) <= 40):
+        return Response({"detail": "Last name must be 2–40 characters with no invalid characters."}, status=422)
+
+    user_type = request.data.get("user_type")
+    if user_type not in {0, 1}:
+        return Response({"detail": "Invalid user type."}, status=422)
+
+    Account.objects.create_user(
+        email=email,
+        password=new_password,
+        first_name=first_name,
+        last_name=last_name,
+        user_type=user_type,
+    )
+    return Response({"detail": "Registration successful."}, status=201)
 
 
 @api_view(['POST'])
@@ -79,6 +120,21 @@ def send_otp_email(email: str, otp: int) -> None:
     """
     subject = 'OTP for Secure E-Commerce account verification'
     message = f'Your OTP is {otp}.'
+    # email_from = settings.EMAIL_HOST_USER
+    recipient_list = [email]
+    # send_mail(subject, message, email_from, recipient_list)
+
+
+# noinspection PyUnusedLocal
+def send_account_exists_email(email: str) -> None:
+    """
+    Inform the user that an account with this email already exists.
+    """
+    subject = 'Notice for Secure E-Commerce account'
+    message = \
+        "An account with this email address already exists on Secure E-Commerce.\n\n" \
+        "If you forgot your password, you can reset it using the 'Forgot Password' option.\n" \
+        "If you didn't try to sign up, you can safely ignore this message."
     # email_from = settings.EMAIL_HOST_USER
     recipient_list = [email]
     # send_mail(subject, message, email_from, recipient_list)

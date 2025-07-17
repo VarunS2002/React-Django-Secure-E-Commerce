@@ -229,14 +229,20 @@ const signUp = (
         if (!response.ok) {
           // If the response is not OK, throw an error to catch it later
           throw new Error('Failed to sign up. Please try again.');
+        } else if (response.status === 202) {
+          setSignUpDialogOpen(true);
+          setSignUpTitle('Sign Up Successful');
+          setSignUpMessage('We have sent you a confirmation email to complete registration.');
+          return Promise.resolve(null);
         }
         return response.json();
       })
       .then((data) => {
-        setSignUpDialogOpen(true);
-        setSignUpTitle('Sign Up Successful');
-        setSignUpMessage('Please sign in.');
-        changeMode();
+        if (data !== null) {
+          setSignUpDialogOpen(true);
+          setSignUpTitle('Sign Up Successful');
+          setSignUpMessage('Please sign in.');
+        }
       })
       .catch((error) => {
         // Handle any errors that occurred during the fetch operation

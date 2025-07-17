@@ -21,7 +21,7 @@ class AccountManager(BaseUserManager):
         """
         if not email:
             raise ValueError('Email address must be set')
-        if not user_type:
+        if user_type is None:
             raise ValueError('User type must be set')
         if not first_name:
             raise ValueError('First name must be set')

@@ -419,7 +419,7 @@ const validateAddress = (
   setAddress: Dispatch<SetStateAction<string>>,
   setAddressError: Dispatch<SetStateAction<string>>,
 ): void => {
-  const isUpTo100Characters = event.target.value.length <= 100;
+  const isUpTo100Characters = event.target.value.length <= 400;
   if (isUpTo100Characters) {
     setAddressError('');
     setAddress(cleanData(event.target.value));
@@ -429,7 +429,7 @@ const validateAddress = (
     setAddressError('');
     setAddress('');
   } else {
-    setAddressError('Address must be less than 100 characters');
+    setAddressError('Address must be less than 400 characters');
     setAddress('');
   }
 };

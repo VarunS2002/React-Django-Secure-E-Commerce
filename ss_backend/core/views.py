@@ -38,6 +38,11 @@ def current_user(request: Request) -> Response:
     return Response({"detail": "Failed to fetch user data."}, status=500)
 
 
+def is_valid_email(email: str) -> bool:
+    email_pattern = re.compile(r'^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$')
+    return is_clean_data(email) and email_pattern.fullmatch(email) and (len(email) <= 70)
+
+
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def user_signup(request: Request) -> Response:
@@ -50,8 +55,7 @@ def user_signup(request: Request) -> Response:
             return Response({"detail": f"Missing '{field}' field."}, status=400)
 
     email = request.data.get("email", "").strip()
-    email_pattern = re.compile(r'^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$')
-    if not is_clean_data(email) or not email_pattern.fullmatch(email) or not (len(email) <= 70):
+    if not is_valid_email(email):
         return Response({"detail": "Invalid email address."}, status=422)
 
     if Account.objects.filter(email=email).exists():
@@ -152,8 +156,7 @@ def generate_otp(request: Request) -> Response:
     if not email:
         return Response({"detail": "Missing 'email' field."}, status=400)
 
-    email_pattern = re.compile(r'^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$')
-    if not is_clean_data(email) or not email_pattern.fullmatch(email) or not (len(email) <= 70):
+    if not is_valid_email(email):
         return Response({"detail": "Invalid email address."}, status=422)
 
     account = Account.objects.get(email=email)
@@ -187,8 +190,7 @@ def reset_password(request: Request) -> Response:
     if not email or not otp_input or not new_password:
         return Response({"detail": "Missing required fields."}, status=400)
 
-    email_pattern = re.compile(r'^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$')
-    if not is_clean_data(email) or not email_pattern.fullmatch(email) or not (len(email) <= 70):
+    if not is_valid_email(email):
         return Response({"detail": "Invalid email address."}, status=422)
 
     if not otp_input.isdigit() or len(otp_input) != 4:

@@ -51,7 +51,7 @@ def user_signup(request: Request) -> Response:
 
     email = request.data.get("email", "").strip()
     email_pattern = re.compile(r'^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$')
-    if not email_pattern.match(email) or not (len(email) <= 70):
+    if not email_pattern.fullmatch(email) or not (len(email) <= 70):
         return Response({"detail": "Invalid email address."}, status=422)
 
     if Account.objects.filter(email=email).exists():
@@ -66,7 +66,7 @@ def user_signup(request: Request) -> Response:
     password_pattern = re.compile(
         r'^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])[a-zA-Z0-9!"#$%&\'()*+,\-./:;<=>?@\[\]^_`{|}~]{6,30}$'
     )
-    if not password_pattern.match(new_password) or not (6 <= len(new_password) <= 30):
+    if not password_pattern.fullmatch(new_password) or not (6 <= len(new_password) <= 30):
         return Response({"detail": "Invalid or weak password."}, status=422)
     if new_password == email:
         return Response({"detail": "Password cannot be same as the email."}, status=422)
@@ -152,7 +152,7 @@ def generate_otp(request: Request) -> Response:
         return Response({"detail": "Missing 'email' field."}, status=400)
 
     email_pattern = re.compile(r'^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$')
-    if not email_pattern.match(email) or not (len(email) <= 70):
+    if not email_pattern.fullmatch(email) or not (len(email) <= 70):
         return Response({"detail": "Invalid email address."}, status=422)
 
     account = Account.objects.get(email=email)
@@ -187,7 +187,7 @@ def reset_password(request: Request) -> Response:
         return Response({"detail": "Missing required fields."}, status=400)
 
     email_pattern = re.compile(r'^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$')
-    if not email_pattern.match(email) or not (len(email) <= 70):
+    if not email_pattern.fullmatch(email) or not (len(email) <= 70):
         return Response({"detail": "Invalid email address."}, status=422)
 
     if not otp_input.isdigit() or len(otp_input) != 4:
@@ -196,7 +196,7 @@ def reset_password(request: Request) -> Response:
     password_pattern = re.compile(
         r'^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])[a-zA-Z0-9!"#$%&\'()*+,\-./:;<=>?@\[\]^_`{|}~]{6,30}$'
     )
-    if not password_pattern.match(new_password) or not (6 <= len(new_password) <= 30):
+    if not password_pattern.fullmatch(new_password) or not (6 <= len(new_password) <= 30):
         return Response({"detail": "Invalid or weak password."}, status=422)
     if new_password == email:
         return Response({"detail": "Password cannot be same as the email."}, status=422)
@@ -342,7 +342,7 @@ def is_valid_image_url(url: str) -> bool:
         r'^https?://.*\.(avif|apng|bmp|gif|ico|jpeg|jpg|png|svg|tiff?|webp|heic)$',
         re.IGNORECASE
     )
-    if not image_url_pattern.match(url):
+    if not image_url_pattern.fullmatch(url):
         return False
 
     if len(url) > 2000:

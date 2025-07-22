@@ -1,8 +1,9 @@
-from django.contrib.admin import ModelAdmin
-
-from core.forms import AccountChangeForm, AccountCreationForm
+from django.contrib.admin import ModelAdmin, StackedInline
 from django.contrib.auth.admin import UserAdmin
 from django.utils.translation import gettext_lazy as _
+
+from core.forms import AccountChangeForm, AccountCreationForm
+from core.models import OrderItem
 
 
 class AccountAdmin(UserAdmin):
@@ -81,10 +82,18 @@ class ItemAdmin(ModelAdmin):
     ordering = ('name', 'created_at', 'seller',)
 
 
+class OrderItemInline(StackedInline):
+    model = OrderItem
+    extra = 0
+    readonly_fields = ('item', 'quantity')
+    can_delete = False
+
+
 class OrderAdmin(ModelAdmin):
     """
     Custom order admin for Order model.
     """
+    inlines = [OrderItemInline]
     readonly_fields = ('created_at',  )
     fieldsets = (
         (None, {'fields': ('buyer','price', 'address', 'zip', 'contact_number')}),

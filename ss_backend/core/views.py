@@ -249,7 +249,7 @@ def get_all_listings(request: Request) -> Response:
     Get all the listings from all sellers.
     """
     if request.user.user_type != 0:
-        return Response({"detail": "Permission denied"}, status=403)
+        return Response({"detail": "Permission denied."}, status=403)
 
     listings = Item.objects.all()
     listings_json = []
@@ -296,7 +296,7 @@ def get_my_listings(request: Request) -> Response:
     Get all the listings of the current seller.
     """
     if request.user.user_type != 1:
-        return Response({"detail": "Permission denied"}, status=403)
+        return Response({"detail": "Permission denied."}, status=403)
 
     listings = Item.objects.filter(seller=request.user)
     listings_json = []
@@ -320,22 +320,22 @@ def delete_listing(request: Request) -> Response:
     Deletes a product listing.
     """
     if request.user.user_type != 1:
-        return Response({"detail": "Permission denied"}, status=403)
+        return Response({"detail": "Permission denied."}, status=403)
 
     item_id = request.data.get("id")
     if not item_id:
-        return Response({"detail": "Missing 'id' field"}, status=400)
+        return Response({"detail": "Missing 'id' field."}, status=400)
 
     try:
         item = Item.objects.get(id=item_id)
     except Item.DoesNotExist:
-        return Response({"detail": "Listing not found"}, status=404)
+        return Response({"detail": "Listing not found."}, status=404)
 
     if item.seller != request.user:
-        return Response({"detail": "Permission denied"}, status=403)
+        return Response({"detail": "Permission denied."}, status=403)
 
     item.delete()
-    return Response({"detail": "Listing deleted successfully"}, status=200)
+    return Response({"detail": "Listing deleted successfully."}, status=200)
 
 
 def is_valid_image_url(url: str) -> bool:
@@ -384,7 +384,7 @@ def create_listing(request: Request) -> Response:
     Create a new product listing.
     """
     if request.user.user_type != 1:
-        return Response({"detail": "Permission Denied"}, status=403)
+        return Response({"detail": "Permission Denied."}, status=403)
 
     name = request.data.get("name", "").strip()
     price = request.data.get("price")
@@ -414,7 +414,7 @@ def create_listing(request: Request) -> Response:
     )
 
     return Response({
-        "detail": "Listing created successfully",
+        "detail": "Listing created successfully.",
         'id': item.id,
         'name': item.name,
         'price': f"${item.price}",

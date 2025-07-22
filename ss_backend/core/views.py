@@ -335,7 +335,7 @@ def delete_listing(request: Request) -> Response:
         return Response({"detail": "Permission denied."}, status=403)
 
     item.delete()
-    return Response({"detail": "Listing deleted successfully."}, status=200)
+    return Response({"detail": "Listing deleted successfully."}, status=204)
 
 
 def is_valid_image_url(url: str) -> bool:

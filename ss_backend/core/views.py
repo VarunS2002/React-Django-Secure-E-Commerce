@@ -1,9 +1,13 @@
+import decimal
 import re
 import secrets
 
 import bleach
+import phonenumbers
 import requests
 from django.core.exceptions import ObjectDoesNotExist
+from django.db import transaction, IntegrityError, DatabaseError
+from django.utils.timezone import now
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.request import Request
@@ -266,6 +270,35 @@ def get_all_listings(request: Request) -> Response:
     return Response(listings_json, status=200)
 
 
+def is_valid_card(card, exp, csc) -> bool:
+    if not all(map(is_clean_data, [card, exp, csc])):
+        return False
+
+    card_pattern = re.compile(r"\d{16}")
+    if not card_pattern.fullmatch(card):
+        return False
+
+    csc_pattern = re.compile(r"\d{3,4}")
+    if not csc_pattern.fullmatch(csc):
+        return False
+
+    exp_pattern = re.compile(r"^(0[1-9]|1[0-2])/([0-9]{2})$")
+    if not exp_pattern.fullmatch(exp):
+        return False
+    try:
+        exp_month, exp_year = map(int, exp.split('/'))
+        current_year = int(str(now().year)[2:])
+        current_month = now().month
+        if exp_year < current_year:
+            return False
+        if exp_year == current_year and exp_month < current_month:
+            return False
+    except ValueError:
+        return False
+
+    return True
+
+
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def place_order(request: Request) -> Response:
@@ -273,20 +306,87 @@ def place_order(request: Request) -> Response:
     Place an order.
     """
     if request.user.user_type != 0:
-        return Response({}, status=403)
+        return Response({"detail": "Permission denied."}, status=403)
 
-    order = Order.objects.create(buyer=request.user,
-                                 address=request.data['address'],
-                                 zip=request.data['zip'].replace(' ', ''),
-                                 contact_number='+1' + str(request.data['phone']),
-                                 price=request.data['totalPrice']
-                                 )
-    order.save()
-    for item in request.data['items']:
-        model_item = Item.objects.get(id=item['id'])
-        OrderItem.objects.create(order=order, item=model_item, quantity=item['quantity'])
+    address = request.data.get("address", "").strip()
+    if not address:
+        return Response({"detail": "Missing 'address' field."}, status=400)
+    if not is_clean_data(address) or not (len(address) <= 400):
+        return Response({"detail": "Address must be upto 400 characters with no invalid characters."}, status=422)
 
-    return Response({}, status=201)
+    zipcode = request.data.get("zip", "").replace(" ", "").strip()
+    if not zipcode:
+        return Response({"detail": "Missing 'zip code' field."}, status=400)
+    # Matches Canadian Zipcode Pattern
+    zipcode_pattern = re.compile(r"^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$")
+    if not is_clean_data(zipcode) or not zipcode_pattern.fullmatch(zipcode):
+        return Response({"detail": "Invalid zip code."}, status=422)
+
+    # Matches Candian Phone Numbers
+    contact_number = str(request.data.get("phone", ""))
+    if not contact_number:
+        return Response({"detail": "Missing 'phone number' field."}, status=400)
+    contact_number = '1' + contact_number
+    try:
+        phone_obj = phonenumbers.parse(contact_number, region='CA')
+    except phonenumbers.NumberParseException:
+        return Response({"detail": "Invalid phone number."}, status=422)
+    if not is_clean_data(contact_number) or not phonenumbers.is_valid_number_for_region(phone_obj, "CA"):
+        return Response({"detail": "Invalid phone number."}, status=422)
+
+    card = request.data.get("card", "").strip()
+    exp = request.data.get("exp", "").strip()
+    csc = request.data.get("csc", "").strip()
+    if not card or not exp or not csc:
+        return Response({"detail": "Missing required fields: card, exp, or csc."}, status=400)
+    if not is_valid_card(card, exp, csc):
+        return Response({"detail": "Invalid card."}, status=422)
+
+    items = request.data.get("items", [])
+    if not items:
+        return Response({"detail": "Missing 'items' field."}, status=400)
+
+    total_price = decimal.Decimal(0)
+    order_items = []
+
+    try:
+        for item_data in items:
+            item_id = int(item_data.get("id"))
+            quantity = int(item_data.get("quantity", 0))
+
+            if quantity <= 0:
+                return Response({"detail": "Invalid quantity."}, status=422)
+
+            item = Item.objects.get(id=item_id)
+            subtotal = item.price * quantity
+            total_price += subtotal
+
+            order_items.append((item, quantity))
+
+    except Item.DoesNotExist:
+        # noinspection PyUnboundLocalVariable
+        return Response({"detail": f"Item not found."}, status=404)
+    except (ValueError, TypeError) as e:
+        print(e)
+        return Response({"detail": "Invalid item or quantity."}, status=422)
+
+    try:
+        with transaction.atomic(durable=True):
+            order = Order.objects.create(
+                buyer=request.user,
+                address=address,
+                zip=zipcode,
+                contact_number=contact_number,
+                price=total_price
+            )
+
+            for item, quantity in order_items:
+                OrderItem.objects.create(order=order, item=item, quantity=quantity)
+
+    except (IntegrityError, DatabaseError):
+        return Response({"detail": "Failed to place order."}, status=500)
+
+    return Response({"detail": "Order placed successfully."}, status=201)
 
 
 @api_view(['GET'])

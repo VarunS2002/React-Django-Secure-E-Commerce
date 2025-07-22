@@ -479,43 +479,45 @@ const validatePhone = (
 
 const validateCard = (
   event: ChangeEvent<HTMLInputElement>,
-  setCard: Dispatch<SetStateAction<number>>,
+  setCard: Dispatch<SetStateAction<string>>,
   setCardError: Dispatch<SetStateAction<string>>,
 ) : void => {
   const isCard = !!event.target.value.match(/^\d{16}$/);
   if (isCard) {
     setCardError('');
-    setCard(Number(event.target.value));
+    setCard(cleanData(event.target.value));
+    event.target.value = cleanData(event.target.value);
   } else if (event.target.value === '') {
     setCardError('');
-    setCard(0);
+    setCard('');
   } else if (event.target.value.length !== 16) {
     setCardError('Card number must be 16 digits long');
-    setCard(0);
+    setCard('');
   } else {
     setCardError('Invalid card number');
-    setCard(0);
+    setCard('');
   }
 };
 
 const validateCsc = (
   event: ChangeEvent<HTMLInputElement>,
-  setCsc: Dispatch<SetStateAction<number>>,
+  setCsc: Dispatch<SetStateAction<string>>,
   setCscError: Dispatch<SetStateAction<string>>,
 ) : void => {
-  const isCvc = !!event.target.value.match(/^\d{3}$/);
-  if (isCvc) {
+  const isCsc = !!event.target.value.match(/^\d{3,4}$/);
+  if (isCsc) {
     setCscError('');
-    setCsc(Number(event.target.value));
+    setCsc(cleanData(event.target.value));
+    event.target.value = cleanData(event.target.value);
   } else if (event.target.value === '') {
     setCscError('');
-    setCsc(0);
-  } else if (event.target.value.length !== 3) {
-    setCscError('CSC must be 3 digits long');
-    setCsc(0);
+    setCsc('');
+  } else if (event.target.value.length !== 3 && event.target.value.length !== 4) {
+    setCscError('CSC must be 3 or 4 digits long');
+    setCsc('');
   } else {
     setCscError('Invalid CSC');
-    setCsc(0);
+    setCsc('');
   }
 };
 
@@ -558,9 +560,9 @@ const validateBeforeCheckout = (
   setZipError: Dispatch<SetStateAction<string>>,
   phone: number,
   setPhoneError: Dispatch<SetStateAction<string>>,
-  card: number,
+  card: string,
   setCardError: Dispatch<SetStateAction<string>>,
-  csc: number,
+  csc: string,
   setCscError: Dispatch<SetStateAction<string>>,
   exp: string,
   setExpError: Dispatch<SetStateAction<string>>,
@@ -610,7 +612,7 @@ const validateBeforeCheckout = (
       phoneFocused = true;
     }
   }
-  if (card === 0) {
+  if (card === '') {
     isValidForm = false;
     const cardField = document.getElementById('creditCard');
     if (cardField instanceof HTMLInputElement) {
@@ -623,7 +625,7 @@ const validateBeforeCheckout = (
       cardFocused = true;
     }
   }
-  if (csc === 0) {
+  if (csc === '') {
     isValidForm = false;
     const cscField = document.getElementById('csc');
     if (cscField instanceof HTMLInputElement) {

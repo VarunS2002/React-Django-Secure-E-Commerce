@@ -37,10 +37,9 @@ const checkout = (
   address: string,
   zip: string,
   phone: number,
-  card: number,
+  card: string,
   exp: string,
-  csc: number,
-  totalPrice: number,
+  csc: string,
   setCheckoutTitle: Dispatch<SetStateAction<string>>,
   setCheckoutMessage: Dispatch<SetStateAction<string>>,
   setCheckoutDialogOpen: Dispatch<SetStateAction<boolean>>,
@@ -56,7 +55,6 @@ const checkout = (
       card,
       exp,
       csc,
-      totalPrice,
     }),
   }, setSessionExpiredDialogOpen)
     .then((response) => {

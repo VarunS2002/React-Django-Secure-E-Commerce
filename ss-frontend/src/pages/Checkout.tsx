@@ -62,11 +62,11 @@ function Checkout({
   const [zipError, setZipError] = useState('');
   const [phone, setPhone] = useState(0);
   const [phoneError, setPhoneError] = useState('');
-  const [card, setCard] = useState(0);
+  const [card, setCard] = useState('');
   const [cardError, setCardError] = useState('');
   const [exp, setExp] = useState('');
   const [expError, setExpError] = useState('');
-  const [csc, setCsc] = useState(0);
+  const [csc, setCsc] = useState('');
   const [cscError, setCscError] = useState('');
 
   const goToStore = (): void => {
@@ -117,7 +117,6 @@ function Checkout({
                 card,
                 exp,
                 csc,
-                totalPrice,
                 setCheckoutTitle,
                 setCheckoutMessage,
                 setCheckoutDialogOpen,
@@ -187,7 +186,6 @@ function Checkout({
             label="Credit Card Number"
             name="creditCard"
             autoComplete="cc-number"
-            type="number"
           />
           <div style={{
             display: 'flex',
@@ -208,7 +206,6 @@ function Checkout({
               label="CSC"
               name="csc"
               autoComplete="cc-csc"
-              type="number"
             />
             <TextField
               error={expError !== ''}

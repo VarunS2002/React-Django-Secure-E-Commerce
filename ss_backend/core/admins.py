@@ -78,7 +78,7 @@ class ItemAdmin(ModelAdmin):
     )
     list_display = ('name', 'price','image_url', 'created_at', )
     list_filter = ('created_at', 'seller')
-    search_fields = ('name',  'price', 'seller')
+    search_fields = ('name',  'price', 'seller__first_name', 'seller__last_name',)
     ordering = ('name', 'created_at', 'seller',)
 
 
@@ -101,7 +101,7 @@ class OrderAdmin(ModelAdmin):
     )
     list_display = ('buyer', 'price','created_at', )
     list_filter = ('created_at', )
-    search_fields = ('buyer', 'total_price', )
+    search_fields = ('buyer__first_name', 'buyer__last_name', 'price',)
     ordering = ('buyer', 'price', 'created_at',)
 
 
@@ -116,5 +116,5 @@ class OrderItemAdmin(ModelAdmin):
     )
     list_display = ('order', 'item', 'quantity', 'created_at', )
     list_filter = ('created_at',)
-    search_fields = ('order', 'item', 'quantity')
+    search_fields = ('order__buyer__first_name', 'order__buyer__last_name', 'order__price', 'item__name', 'quantity',)
     ordering = ('order', 'item', 'quantity', 'created_at',)

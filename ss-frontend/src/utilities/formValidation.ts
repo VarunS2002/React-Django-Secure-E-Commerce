@@ -392,10 +392,10 @@ const validateFeedback = (
   setFeedback: Dispatch<SetStateAction<string>>,
   setFeedbackError: Dispatch<SetStateAction<string>>,
 ): void => {
-  if (event.target.value.length <= 1000 && event.target.value.trim().length >= 2) {
+  const is2To1000Characters = event.target.value.trim().length >= 2 && event.target.value.trim().length <= 1000;
+  if (is2To1000Characters) {
     setFeedbackError('');
-    setFeedback(cleanData(event.target.value));
-
+    setFeedback(cleanData(event.target.value).trim());
     event.target.value = cleanData(event.target.value);
   } else if (event.target.value === '') {
     setFeedbackError('');
@@ -403,10 +403,10 @@ const validateFeedback = (
   } else if (event.target.value.trim().length < 2) {
     setFeedbackError('Feedback must be at least 2 characters long');
     setFeedback('');
+    event.target.value = cleanData(event.target.value);
   } else {
     setFeedbackError('Feedback cannot be more than 1000 characters long');
-    setFeedback(cleanData(event.target.value));
-
+    setFeedback('');
     event.target.value = cleanData(event.target.value);
   }
 };

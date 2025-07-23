@@ -32,12 +32,11 @@ const validateName = (
   setName: Dispatch<SetStateAction<string>>,
   setNameError: Dispatch<SetStateAction<string>>,
 ): void => {
-  const is2To40Characters = event.target.value.length >= 2 && event.target.value.length <= 40;
+  const is2To40Characters = event.target.value.trim().length >= 2 && event.target.value.trim().length <= 40;
 
   if (is2To40Characters) {
     setNameError('');
-    setName(cleanData(event.target.value));
-
+    setName(cleanData(event.target.value).trim());
     event.target.value = cleanData(event.target.value);
   } else if (event.target.value === '') {
     setNameError('');
@@ -45,6 +44,7 @@ const validateName = (
   } else {
     setNameError('Name must be 2 to 40 characters long');
     setName('');
+    event.target.value = cleanData(event.target.value);
   }
 };
 
@@ -54,25 +54,22 @@ const validateEmail = (
   setEmailError: Dispatch<SetStateAction<string>>,
 ): void => {
   const isEmailFormat = !!event.target.value.match(/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/);
-  const isUpTo70Characters = event.target.value.length <= 70;
+  const isUpTo70Characters = event.target.value.trim().length <= 70;
   const isValidEmail = isEmailFormat && isUpTo70Characters;
   if (isValidEmail) {
     setEmailError('');
-    setEmail(cleanData(event.target.value));
-
+    setEmail(cleanData(event.target.value).trim());
     event.target.value = cleanData(event.target.value);
   } else if (event.target.value === '') {
     setEmailError('');
     setEmail('');
   } else if (!isUpTo70Characters) {
     setEmailError('Email address cannot be more than 70 characters long');
-    setEmail(cleanData(event.target.value));
-
+    setEmail('');
     event.target.value = cleanData(event.target.value);
   } else {
     setEmailError('Invalid email address');
-    setEmail(cleanData(event.target.value));
-
+    setEmail('');
     event.target.value = cleanData(event.target.value);
   }
 };
@@ -92,7 +89,7 @@ const validatePassword = (
       setPassword('');
       setPasswordError('');
     } else {
-      setPassword(event.target.value);
+      setPassword(event.target.value.trim());
       setPasswordError('');
     }
   } else if (mode === FormModes.SignUp) {
@@ -107,14 +104,14 @@ const validatePassword = (
       const hasUppercase = !!event.target.value.match(
         /(?=.*[A-Z]).*[a-zA-Z0-9!"#$%&'()*+,\-./:;<=>?@[\]^_`{|}~]/,
       );
-      const is6To30Characters = event.target.value.length >= 6 && event.target.value.length <= 30;
+      const is6To30Characters = event.target.value.trim().length >= 6 && event.target.value.trim().length <= 30;
       const isNotSameAsValidEmail = emailError === '' ? event.target.value !== email : true;
       const isValidPassword = !!event.target.value.match(passwordRegex) && isNotSameAsValidEmail;
       if (event.target.value === '') {
         setPassword('');
         setPasswordError('');
       } else if (isValidPassword) {
-        setPassword(event.target.value);
+        setPassword(event.target.value.trim());
         setPasswordError('');
       } else {
         setPassword('');
@@ -659,10 +656,10 @@ const validateProductName = (
   setProductName: Dispatch<SetStateAction<string>>,
   setProductNameError: Dispatch<SetStateAction<string>>,
 ): void => {
-  const is2To50Characters = event.target.value.length >= 2 && event.target.value.length <= 50;
+  const is2To50Characters = event.target.value.trim().length >= 2 && event.target.value.trim().length <= 50;
   if (is2To50Characters) {
     setProductNameError('');
-    setProductName(cleanData(event.target.value));
+    setProductName(cleanData(event.target.value).trim());
 
     event.target.value = cleanData(event.target.value);
   } else if (event.target.value === '') {

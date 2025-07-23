@@ -148,7 +148,7 @@ forms written in TypeScript with React and Python with Django.
 
 - Sending OTPs is not implemented, it is only generated and can be validated
 
-- Sending Email warnings and confirmations is not implemented
+- Sending Email warnings and Two-factor authentication (2FA) confirmations is not implemented
 
 - Payment processing is not implemented
 
@@ -201,3 +201,7 @@ real-world deployment. For example:
 - No PIPEDA/GDPR or other legal compliance considerations
 
 - No user consent or data management workflows
+
+- No localization support
+
+- No support for validating non-Canadian phone numbers/addresses/card details

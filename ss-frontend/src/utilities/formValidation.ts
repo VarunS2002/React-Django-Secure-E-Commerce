@@ -669,7 +669,6 @@ const validateProductName = (
   if (is2To50Characters) {
     setProductNameError('');
     setProductName(cleanData(event.target.value).trim());
-
     event.target.value = cleanData(event.target.value);
   } else if (event.target.value === '') {
     setProductNameError('');
@@ -677,6 +676,7 @@ const validateProductName = (
   } else {
     setProductNameError('Product name must be 2 to 50 characters long');
     setProductName('');
+    event.target.value = cleanData(event.target.value);
   }
 };
 
@@ -727,10 +727,9 @@ const validateImgUrl = (
 
   const sanitizedValue = cleanData(event.target.value);
 
-  if (isValidImageUrl(sanitizedValue)) {
+  if (isValidImageUrl(sanitizedValue.trim())) {
     setImageUrlError('');
     setImageUrl(sanitizedValue);
-
     event.target.value = sanitizedValue;
   } else if (event.target.value === '') {
     setImageUrlError('');
@@ -738,6 +737,7 @@ const validateImgUrl = (
   } else {
     setImageUrlError('Invalid image URL');
     setImageUrl('');
+    event.target.value = sanitizedValue;
   }
 };
 

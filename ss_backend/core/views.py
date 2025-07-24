@@ -311,8 +311,8 @@ def place_order(request: Request) -> Response:
     address = request.data.get("address", "").strip()
     if not address:
         return Response({"detail": "Missing 'address' field."}, status=400)
-    if not is_clean_data(address) or not (len(address) <= 400):
-        return Response({"detail": "Address must be upto 400 characters with no invalid characters."}, status=422)
+    if not is_clean_data(address) or not (2 <= len(address) <= 400):
+        return Response({"detail": "Address must be upto 2-400 characters with no invalid characters."}, status=422)
 
     zipcode = request.data.get("zip", "").replace(" ", "").strip()
     if not zipcode:

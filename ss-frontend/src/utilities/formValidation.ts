@@ -416,18 +416,22 @@ const validateAddress = (
   setAddress: Dispatch<SetStateAction<string>>,
   setAddressError: Dispatch<SetStateAction<string>>,
 ): void => {
-  const isUpTo100Characters = event.target.value.length <= 400;
-  if (isUpTo100Characters) {
+  const is1To100Characters = event.target.value.trim().length >= 2 && event.target.value.trim().length <= 400;
+  if (is1To100Characters) {
     setAddressError('');
-    setAddress(cleanData(event.target.value));
-
+    setAddress(cleanData(event.target.value).trim());
     event.target.value = cleanData(event.target.value);
   } else if (event.target.value === '') {
     setAddressError('');
     setAddress('');
+  } else if (event.target.value.trim().length < 2) {
+    setAddressError('Address must be at least 2 characters long');
+    setAddress('');
+    event.target.value = cleanData(event.target.value);
   } else {
     setAddressError('Address must be less than 400 characters');
     setAddress('');
+    event.target.value = cleanData(event.target.value);
   }
 };
 

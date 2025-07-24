@@ -416,8 +416,8 @@ const validateAddress = (
   setAddress: Dispatch<SetStateAction<string>>,
   setAddressError: Dispatch<SetStateAction<string>>,
 ): void => {
-  const is1To100Characters = event.target.value.trim().length >= 2 && event.target.value.trim().length <= 400;
-  if (is1To100Characters) {
+  const is2To100Characters = event.target.value.trim().length >= 2 && event.target.value.trim().length <= 400;
+  if (is2To100Characters) {
     setAddressError('');
     setAddress(cleanData(event.target.value).trim());
     event.target.value = cleanData(event.target.value);
@@ -443,8 +443,7 @@ const validateZip = (
   const isZip = !!event.target.value.match(/^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/);
   if (isZip) {
     setZipError('');
-    setZip(cleanData(event.target.value));
-
+    setZip(cleanData(event.target.value).trim());
     event.target.value = cleanData(event.target.value);
   } else if (event.target.value === '') {
     setZipError('');
@@ -452,6 +451,7 @@ const validateZip = (
   } else {
     setZipError('Invalid zip code');
     setZip('');
+    event.target.value = cleanData(event.target.value);
   }
 };
 
@@ -486,7 +486,7 @@ const validateCard = (
   const isCard = !!event.target.value.match(/^\d{16}$/);
   if (isCard) {
     setCardError('');
-    setCard(cleanData(event.target.value));
+    setCard(cleanData(event.target.value).trim());
     event.target.value = cleanData(event.target.value);
   } else if (event.target.value === '') {
     setCardError('');
@@ -494,9 +494,11 @@ const validateCard = (
   } else if (event.target.value.length !== 16) {
     setCardError('Card number must be 16 digits long');
     setCard('');
+    event.target.value = cleanData(event.target.value);
   } else {
     setCardError('Invalid card number');
     setCard('');
+    event.target.value = cleanData(event.target.value);
   }
 };
 
@@ -508,7 +510,7 @@ const validateCsc = (
   const isCsc = !!event.target.value.match(/^\d{3,4}$/);
   if (isCsc) {
     setCscError('');
-    setCsc(cleanData(event.target.value));
+    setCsc(cleanData(event.target.value).trim());
     event.target.value = cleanData(event.target.value);
   } else if (event.target.value === '') {
     setCscError('');
@@ -516,9 +518,11 @@ const validateCsc = (
   } else if (event.target.value.length !== 3 && event.target.value.length !== 4) {
     setCscError('CSC must be 3 or 4 digits long');
     setCsc('');
+    event.target.value = cleanData(event.target.value);
   } else {
     setCscError('Invalid CSC');
     setCsc('');
+    event.target.value = cleanData(event.target.value);
   }
 };
 
@@ -537,12 +541,12 @@ const validateExp = (
     const currentMonth = new Date().getMonth() + 1;
     if (Number(year) > Number(currentYear) || (Number(year) === Number(currentYear) && Number(month) >= currentMonth)) {
       setExpError('');
-      setExp(cleanData(event.target.value));
-
+      setExp(cleanData(event.target.value).trim());
       event.target.value = cleanData(event.target.value);
     } else {
       setExpError('Card has expired');
       setExp('');
+      event.target.value = cleanData(event.target.value);
     }
   } else if (event.target.value === '') {
     setExpError('');
@@ -550,6 +554,7 @@ const validateExp = (
   } else {
     setExpError('Invalid expiration date');
     setExp('');
+    event.target.value = cleanData(event.target.value);
   }
 };
 

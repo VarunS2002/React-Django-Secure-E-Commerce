@@ -2,3 +2,4 @@
 *.iml
 /*.txt
 /ss_backend/*.sqlite3
+/screenshots

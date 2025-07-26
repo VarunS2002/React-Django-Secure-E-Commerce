@@ -166,6 +166,29 @@ forms written in TypeScript with React and Python with Django.
 
 - Host behind a Web Application Firewall like Cloudflare for DoS protection
 
+## Threat Modeling: Attack Tree
+
+This project includes a partial Attack Tree diagram to visualize and understand the potential vulnerabilities in the
+system.
+An attack tree is a structured representation of the different ways an attacker could compromise the application.
+It shows:
+
+- Key attack vectors like login, session management, and form submissions
+
+- Entry points for XSS, SQL injection, CSRF, and privilege escalation
+
+- Possible attacker goals, such as data theft, unauthorized purchases, or account takeover
+
+### Note
+
+This attack tree is not exhaustive.
+It is a work-in-progress and focuses on the most critical areas of the application
+based on the current implementation and known attack surface.
+
+### Attack Tree Diagram
+
+<br>![Attack_Tree_Diagram](https://i.postimg.cc/BQ7w7M79/Attack-Tree.png) <br><br>
+
 ## E-Commerce  Features:
 
 - Login, registration, and email-based password reset

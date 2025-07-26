@@ -189,7 +189,7 @@ based on the current implementation and known attack surface.
 
 <br>![Attack_Tree_Diagram](https://i.postimg.cc/BQ7w7M79/Attack-Tree.png) <br><br>
 
-## E-Commerce  Features:
+## E-Commerce Features:
 
 - Login, registration, and email-based password reset
 
@@ -230,3 +230,5 @@ real-world deployment. For example:
 - No localization support
 
 - No support for validating non-Canadian phone numbers/addresses/card details
+
+- No support for currencies other than the Canadian Dollar

@@ -148,7 +148,7 @@ forms written in TypeScript with React and Python with Django.
 
 - Sending OTPs is not implemented, it is only generated and can be validated
 
-- Sending Email warnings and Two-factor authentication (2FA) confirmations is not implemented
+- Sending Email warnings and Two-factor authentication (2FA) confirmations are not implemented
 
 - Payment processing is not implemented
 
@@ -195,6 +195,8 @@ real-world deployment. For example:
 - No integration with real payment gateways or banking APIs
 
 - Limited scalability and fault tolerance
+
+- No multi-device sessions management
 
 - No production-grade logging, monitoring, or disaster recovery
 

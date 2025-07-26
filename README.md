@@ -166,6 +166,9 @@ forms written in TypeScript with React and Python with Django.
 
 - Host behind a Web Application Firewall like Cloudflare for DoS protection
 
+- Use a `.env` file to store all configurations including but not limited to `SECRET_KEY`, `DEBUG`, `ALLOWED_HOSTS`,
+  `API_URL`, `DATABASE_URL`, `EMAIL_HOST`
+
 ## Threat Modeling: Attack Tree
 
 This project includes a partial Attack Tree diagram to visualize and understand the potential vulnerabilities in the

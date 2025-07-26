@@ -232,3 +232,45 @@ real-world deployment. For example:
 - No support for validating non-Canadian phone numbers/addresses/card details
 
 - No support for currencies other than the Canadian Dollar
+
+## Screenshots:
+
+- Login Page:
+
+  <br>![Login_Page](https://i.postimg.cc/NMMcSpq3/Sign-In.png) <br><br>
+
+- Sign Up Page:
+
+  <br>![Sign_Up_Page](https://i.postimg.cc/76Wkk0qf/Sign-Up.png) <br><br>
+
+- Store Page:
+
+  <br>![Store_Page](https://i.postimg.cc/hvQqPvGM/Store.png) <br><br>
+
+- Cart:
+
+  <br>![Cart](https://i.postimg.cc/ZqjmwXgP/Cart.png) <br><br>
+
+- Checkout Form:
+
+  <br>![Checkout_Form](https://i.postimg.cc/CxTw5Gk8/Checkout.png) <br><br>
+
+- Seller's Listings Page:
+
+  <br>![Listings_Page](https://i.postimg.cc/QMjskj6x/Listings.png) <br><br>
+
+- Seller's Listing Creation Form:
+
+  <br>![Create_Listing_Form](https://i.postimg.cc/FHyNLYVB/Create-Listing-Form.png) <br><br>
+
+### Important Disclaimer for Product Images
+
+Please note that the telescopes displayed in the above "Store Page", "Cart", and "Seller's Listings Page" images are
+real-world products and appear for demonstration purposes only.
+The prices shown may not reflect the actual retail price of these products.
+This is a sample store created to illustrate the functionality and appearance of this e-commerce platform.
+
+No endorsement or affiliation with any specific telescope manufacturer or brand is implied or intended.
+The inclusion of these product images does not constitute an advertisement or an offer to sell these particular
+telescopes.
+All product names, logos, and brands are property of their respective owners.

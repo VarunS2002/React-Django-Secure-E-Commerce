@@ -49,7 +49,8 @@ const LinkContentText = styled(DialogContentText)(() => ({
 
 function About({ open, setOpen }: Props): JSX.Element {
   const version = '1.0.0';
-  const description = 'Secure E-Commerce website created using React and Django.';
+  const description = 'Security-focused e-commerce website with robust user authentication, session management, ' +
+    'and secure post-authentication forms written in TypeScript with React and Python with Django.';
 
   const closeDialog = (): void => {
     setOpen(false);
